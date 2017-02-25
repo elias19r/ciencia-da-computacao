@@ -1,0 +1,8 @@
+Para compilar, digite na linha de comando:
+	make
+
+Para executar, digite:
+	./t1-shortest-path source target
+
+Onde source e target sao os indices das cidade de origem e de destino.
+

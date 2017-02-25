@@ -1,0 +1,69 @@
+\section{Desenvolvimento}
+	
+	\subsection{Formulação}
+
+Para desenvolver o algoritmo, foram utilizados os subsídios 1 e 2 dados na descrição do trabalho. A partir do subsídio 1, foi obtida a seguinte fórmula:
+
+\[
+	\begin{bmatrix}
+		F_{n}\\
+		F_{n-1}
+	\end{bmatrix} = A^{n-1} \times B
+	\text{, onde }
+	A =
+	\begin{bmatrix}
+		1 & 1\\
+		1 & 0
+	\end{bmatrix}
+	\text{ e }
+	B = 
+	\begin{bmatrix}
+		F_{1}\\
+		F_{0}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		1\\
+		1
+	\end{bmatrix}
+\]
+
+O algoritmo para a fórmula acima tem a complexidade $O(log_{2}n)$, uma vez que, pelo subsídio 2, a fórmula para calcular a $n$-ésima potência de uma matriz $A$ é:
+
+\[
+	\left \{
+		\begin{array}{lll}
+			pow(A, n) = A\text{, se } n = 1\\
+			pow(A, n) = pow^{2}(A, n/2)\text{, se } n \text{ é par}\\
+			pow(A, n) = A \times pow^{2}(A, \lfloor n/2 \rfloor)\text{, se } n \text{ é ímpar}
+		\end{array}
+	\right .
+\]
+
+A justificativa da complexidade $O(log_{2}n)$ vem do método de divisão e conquista aplicado na recorrência acima. Isso pode ser concluído observando-se que:
+
+\begin{itemize}
+	\item A cada chamada recursiva, o tamanho do problema é dividido em dois gerando uma árvore de recursão de altura $log_{2}n$.
+	\item Em cada nível $k$ da árvore é realizada uma operação de multiplicação de matrizes considerada de complexidade $O(1)$, pois o resultado de $pow^{2}(A, \lfloor n/2^{k} \rfloor)$ é feito atribuindo-se $R \gets pow(A , \lfloor n/2^{k} \rfloor)$ e então $R \gets R \times R$ se $n$ é par, ou $R \gets A \times (R \times R)$ se $n$ é ímpar.
+	\item Portanto: se em cada nível da árvore é feita uma operação $O(1)$ e sua altura é $log_{2}n$, a ordem complexidade é $O(1) \cdot log_{2}n \Rightarrow O(log_{2}n)$.
+\end{itemize}
+
+	\subsection{Implementação}
+		
+A implementação do projeto foi feita em linguagem C. Não houve a necessidade de criação de estruturas de dados, pois foram utilizadas somente matrizes que são simples arranjos de números inteiros em linguagem C.
+
+Foi necessário usar variáveis inteiras de 64 bits para guardar os valores das operações, pois o próprio limite da entrada, $10^{11}$, já estoura o limite de representação de inteiros com 32 bits. Além disso, no pior caso, mesmo aplicando mod $10^{6}$ nas multiplicações, teríamos por algum instante um valor na ordem de $10^{12}$.
+
+O código é composto de 3 funções que juntas executam o algoritmo. São elas:
+\begin{verbatim}
+unsigned long long int **matrix_mul(unsigned long long int **A,
+      unsigned long long int **B, unsigned long long int mod);
+
+unsigned long long int **matrix_pow(unsigned long long int **M,
+      unsigned long long int n, unsigned long long int mod);
+
+unsigned long long int F(unsigned long long int n,
+      unsigned long long int mod);
+\end{verbatim}
+
+Confira a documentação no código-fonte do projeto.

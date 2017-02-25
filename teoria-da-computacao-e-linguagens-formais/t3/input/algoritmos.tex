@@ -1,0 +1,91 @@
+\section{Algoritmos}
+
+\subsection{Exponencial}
+
+Para o Algoritmo~\ref{alg:expo} que responde certamente a pergunta do \textsc{Subset-Sum}, considere que:
+
+\begin{itemize}
+	\item Os $n$ elementos de $S$ são numerados ${s_1, s_2, \cdots, s_n}$.
+
+	\item Existe uma função \textsc{Merge-List}$(L, L')$ de complexidade $O(|L| + |L'|)$ que faz a união de duas listas ordenadas $L$ e $L'$ e retorna em uma lista ordenada sem elementos repetidos.
+	
+	\item A notação $L + s$ denota uma lista com os números de $L$ acrescidos de $s$. Por exemplo, se $L = \{1, 4, 5\}$, então $L + 3 = \{4, 7, 8\}$.
+	
+	\item Existe uma função \textsc{Search-List}$(L, l)$ de complexidade $O(\log_{2} |L|)$ que busca se um elemento $l$ pertence a lista $L$ e retorna \textit{true} ou \textit{false}.
+\end{itemize}
+
+\begin{algorithm}[h]
+	\KwIn{$\langle S, t \rangle$}
+	\KwOut{\textit{sim} se existe uma solução, \textit{não} caso contrário}
+	$n \leftarrow |S|$\;
+	$L_0 \leftarrow \{0\}$\;
+	\For{$i \leftarrow 1$ \KwTo $n$}{
+		$L_i \leftarrow$ \textsc{Merge-List}$(L_{i-1}, L_{i-1} + s_i)$\;
+		\If{\textsc{Search-List}$(L_i, t)$}{
+			\Return{sim}\;
+		}
+	}
+	\Return{não}\;
+\caption{Responde a pergunta do \textsc{Subset-Sum} em tempo exponencial. \label{alg:expo}}
+\end{algorithm}
+
+Como o tamanho da lista $L_i$ pode chegar a $2^n$, o Algoritmo~\ref{alg:expo} é em geral de tempo exponencial $O(2^n)$. Para explificá-lo, considere o exemplo dados como entrada $S = \{4, 1, 0, 6, 2\}$ e $t = 7$:
+	\begin{align*}
+	L_0 & = \{0\} \\
+	L_1 & = L_0 \cup L_0 + 4 = \{0, 4\} \\
+	L_2 & = L_1 \cup L_1 + 1 = \{0, 1, 4, 5\} \\
+	L_3 & = L_2 \cup L_2 + 0 = \{0, 1, 4, 5\} \\
+	L_4 & = L_3 \cup L_3 + 6 = \{0, 1, 4, 5, 6, \mathbf{7}, 10, 11\}
+	\end{align*}
+
+Então o algoritmo para e retorna \textit{sim}, pois na iteração 4 foi encontrada uma soma para o valor  $t = 7$. Caso nenhuma soma com valor 7 fosse encontrada, no final o algoritmo retornaria \textit{não}.
+
+\subsection{Pseudo-polinomial com Programação Dinâmica}
+
+Em Teoria da Complexidade, um algoritmo executa em tempo pseudo-polinomial se seu tempo de execução é polinomial \textit{no valor numérico} da entrada, mas é exponencial no \textit{comprimento} da entrada -- número de bits requeridos para representá-lo.
+
+No caso do \textsc{Subset-Sum}, pode-se fazer um algoritmo que execute em função do \textit{valor numérico} da soma $max$ de todos os $n$ elementos de $S$.
+
+O Algoritmo~\ref{alg:pseudo} demonstra esse algoritmo pseudo-polinomial usando a técnica de programação dinâmica que armazena os valores já calculados numa matriz (tabela) $Q$ de tamanho $n \times (max + 1)$. Primeiramente é feita uma inicialização da linha 1 de $Q$ e então o algoritmo itera em relação ao valor $max$ para cada outra linha de $Q$.
+
+Como é computado se existe resposta para todos os possíveis valores desde $0$ até $max$, a resposta para $t$ encontra-se na posição $Q(n, t)$ da matriz, mas todas as outras respostas para qualquer valor $0 \leq v \leq max$ encontram-se em $Q(n, v)$.
+
+\SetKw{KwOr}{or}
+\begin{algorithm}[h]
+	\KwIn{$\langle S, t \rangle$}
+	\KwOut{\textit{sim} se existe uma solução, \textit{não} caso contrário}
+	
+	$n \leftarrow |S|$\;
+	$max \leftarrow 0$\;
+	
+	\For{$i \leftarrow 1$ \KwTo $n$}{
+		$max \leftarrow max + s_i$\;
+	}
+	
+	\If{$t < 0$ \KwOr $t > max$}{
+		\Return{não}\;
+	}
+	
+	Seja $Q$ uma matriz de tamanho $n \times (max+1)$\;
+	\For{$j \leftarrow 0$ \KwTo $max$}{
+		$Q(1, j) \leftarrow false$\;
+	}
+	$Q(1, s_1) \leftarrow true$\;
+
+	
+	\For{$i \leftarrow 2$ \KwTo $n$}{
+		\For{$j \leftarrow 0$ \KwTo $max$}{
+			\uIf{$Q(i-1, j)$ \KwOr $j = s_i$ \KwOr $Q(i-1, j - s_i)$}{
+				$Q(i, j) \leftarrow true$\;
+			}
+			\Else{$Q(i, j) \leftarrow false$\;}
+		}
+	}
+	\If{$Q(n, t)$}{
+		\Return{sim}\;
+	}
+	\Return{não}\;
+
+\caption{Responde a pergunta do \textsc{Subset-Sum} em tempo pseudo-polinomial. \label{alg:pseudo}}
+\end{algorithm}
+

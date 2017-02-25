@@ -1,0 +1,35 @@
+# makefile.extras - Project-specific makefile targets
+
+#  Fill in the variable with your USP NUMBER
+#  or pass it to make at the command line
+#  when issuing make upload.
+
+ifndef NUSP
+NUSP = 
+endif
+
+all:  
+
+.PHONY: extras uploadclean
+
+extras:
+	@echo "Extra makefile targets"
+	@echo "  extras        this help"
+	@echo "  upload        pack for upload"
+	@echo "  uploadclean   remove upload pack"
+	@echo $(PROJECT)
+
+upload: $(all_sources) $(all_headers) $(EXTRA_DIST)
+	@if test -z $(NUSP) ; then echo "Erro: *** NUSP NOT INFORMED - See makefile.extras ***" ; exit 1; fi	
+	install -d ./$(NUSP)
+	rm -rf $(NUSP)/*
+	install $^ ./$(NUSP)
+	tar zcvf $(NUSP).tgz $(NUSP)
+	rm -rf $(NUSP)
+
+uploadclean:
+	rm -f $(NUSP).tgz
+
+.DEFAULT:
+	@echo "*** No such target"
+

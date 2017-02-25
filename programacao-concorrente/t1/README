@@ -1,0 +1,58 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+Trabalho 1: Calculo do Pi e Black-Scholes
+
+SSC0143 Programacao Concorrente
+
+Elias Italiano Rodrigues 7987251
+Rodolfo Megiato de Lima  7987286
+Vinicius Katata Biondo   6783972
+
+--------------------------------------------------
+ O Trabalho
+--------------------------------------------------
+
+Este trabalho implementa algoritmos conhecidos para o calculo de muitas
+casas decimais do número. O objetivo com isso nao e' obter uma precisao
+gigantesca e inutil do numero pi, mas sim aplicar conhecimentos da disciplina
+de Programação Concorrente nos algoritmos implementados.
+
+Para isso e' feita a implementacao sequencial e paralela (multi-thread) de
+cada algoritmo, e sao eles: Gauss-Legendre, Borwein (1994) e Metodo de Monte Carlo.
+
+Alem disso, este trabalho tambem implementa as versoes sequencial e paralela da Simulacao Monte Carlo para o algoritmo de Black-Scholes que descreve um fenomeno financeiro que e' a precificacao de derivativos. O algoritmo implementado e' o descrito na especificacao do trabalho.
+
+--------------------------------------------------
+ Como usar os programas
+--------------------------------------------------
+
+Para compilar os programas, execute:
+	make
+
+Para rodar um dos programas a partir do diretorio atual, execute:
+	./bin/nome-do-programa
+
+Para rodar um dos programas do pi calculando o tempo de execucao e redirecionando
+a entrada e a saida para os arquivos entrada_pi.txt e saida_pi.txt, execute:
+	make run EXE=nome-do-programa
+
+Para rodar Black-Scholes calculando o tempo de execucao e redirecionando
+a entrada e a saida para os arquivos entrada_blackscholes.txt e saida_blackscholes.txt, execute:
+	make run-bs # para versao sequencial
+	make run-bsp # para versao paralela
+
+Para rodar conferindo por vazao de memoria, execute:
+	make memcheck EXE=nome-do-programa
+
+Para limpar todos os arquivos compilados, execute:
+	make clean
+
+--------------------------------------------------
+ Problemas?
+--------------------------------------------------
+
+Caso nao consiga compilar e rodar os programas, confira por dependencias
+das bibliotecas "math.h", "gmp.h" e "pthread.h" assim como dos programas usados "make",
+"gcc" e "valgrind".
+

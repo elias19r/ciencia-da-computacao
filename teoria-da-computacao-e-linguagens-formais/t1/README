@@ -1,0 +1,19 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+SCC0205 Teoria da Computacao e Linguagens Formais
+Trabalho 1 - Analisador Lexico e Sintatico para Linguagem AWK
+
+Elias Italiano Rodrigues         7987251
+Gabriel Tessaroli Giancristofaro 4321350
+Paulo Augusto de Godoy Patire    7987060
+
+==================================================
+
+Neste diretorio, encontram-se:
+	./doc        : relatorio do trabalho
+	./grammar    : gramaticas BNF e EBNF da linguagem AWK
+	./src        : programas derivados com a gramatica
+	./derivation : passo-a-passo da derivacao dos programas
+	./parser     : parser em javacc lexico e sintatico de AWK
+

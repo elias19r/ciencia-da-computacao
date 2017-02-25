@@ -1,0 +1,15 @@
+
+Tablename: pessoa
+	Field: codigo Type: int Size 4
+	Field: nome Type: char Size 80
+	Field: idade Type: int Size 4
+	Field: sexo Type: char Size 1
+
+
+Tablename: empresa
+	Field: razaosocial Type: char Size 255
+	Field: endereco Type: char Size 255
+	Field: numero Type: int Size 4
+	Field: cidade Type: char Size 80
+	Field: estado Type: char Size 2
+

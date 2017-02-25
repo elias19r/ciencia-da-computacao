@@ -1,0 +1,52 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+SSC0251 Processamento de Imagens
+Trabalho 2: Gaussian, Laplacian, Laplacian of Gaussian
+
+Elias Italiano Rodrigues 7987251
+2015-03-31
+
+--------------------------------------------------
+ O TRABALHO
+--------------------------------------------------
+
+Este trabalho implementa os filtros: Gaussian, Laplacian, LoG.
+
+--------------------------------------------------
+ COMO COMPILAR OS PROGRAMAS
+--------------------------------------------------
+
+Para compilar todos os programas, execute:
+	make
+
+--------------------------------------------------
+ COMO USAR OS PROGRAMAS
+--------------------------------------------------
+
+Para aplicar todos os filtros na imagem de teste "lena.jpg", execute:
+	make run
+
+Seguem os argumentos opicionais que o programa pode receber:
+    -i, --input <path>    set <path> as the input file
+    -g, --gaussian        apply Gaussian filter
+    -l, --laplacian       apply Laplacian filter
+    --log                 apply Laplacian of Gaussian filter
+    -t, --threshold       threshold value to consider for LoG's zero-crossing
+    --help                display this help and exit
+    --version             output version information and exit
+	
+Exemplos de como rodar:
+	./bin/main -i lena.jpg -g -l --log
+
+Para conferir por vazamento de memoria, execute:
+	make memcheck
+
+--------------------------------------------------
+ Problemas?
+--------------------------------------------------
+
+Caso nao consiga compilar e rodar os programas, confira por dependencias da
+biblioteca OpenCV e math.h, assim como dos programas usados "make", "gcc" e
+"valgrind".
+

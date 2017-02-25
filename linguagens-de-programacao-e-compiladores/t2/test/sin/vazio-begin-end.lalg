@@ -1,0 +1,5 @@
+{ Programa sem conteudo no corpo }
+program sem;
+	var a, b: integer;
+begin
+end.

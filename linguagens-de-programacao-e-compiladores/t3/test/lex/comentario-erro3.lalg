@@ -1,0 +1,6 @@
+program comm_err3;
+	{ Testando nao fechado e sem comentario no fim
+	var a: integer;
+begin
+	a := 10;
+end.

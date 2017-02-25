@@ -1,0 +1,157 @@
+G = (V_n, V_t, P, program)
+
+V_n = {
+    program, instruction, pattern, action, statement, command,
+    if, while, do-while, for, for-in, delete, exit, return,
+    print, getline, expr-list, variable, id, index, lvalue, expr,
+    expr01, expr02, expr03, expr04, expr05, expr06, expr07,
+    expr08, expr09, expr10, expr11, expr12, assign, comparison,
+    arithmetic , unary-op, constant, integer, float, string,
+    sentence, char, alpha-numeric, number, digit, letter,
+    lowercase, uppercase, symbol, sign, endline
+}
+
+V_t = {
+    " ", "!", """, "#", "$", "%", "&", "'", "(", ")", "*",
+    "+", ",", "-", ".", "/", "0", "1", "2", "3", "4", "5", "6",
+    "7", "8", "9", ":", ";", "<", "=", ">", "?", "@", "A", "B",
+    "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
+    "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "[", "\", "]", "^", "_", "`", "a", "b", "c", "d", "e", "f",
+    "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
+    "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~",
+    "BEGIN", "END", "if", "else", "do", "while",
+    "for", "in", "delete", "break", "continue", "next", "exit",
+    "return", "print", "getline", "ARGC", "ARGIND", "ARGV",
+    "BINMODE", "CONVFMT", "ENVIRON", "ERRNO", "FIELDWIDTHS",
+    "FILENAME", "FNR", "FS", "IGNORECASE", "LINT", "NF", "NR",
+    "OFMT", "OFS", "ORS", "PROCINFO", "RS", "RT", "RSTART",
+    "RLENGTH", "SUBSEP", "TEXTDOMAIN"
+}
+
+P = {
+
+01.    program = {instruction}
+
+02.    instruction = [pattern] "{" action "}"
+
+03.    pattern = [BEGIN | END | expr]
+
+04.    action = statement {statement}
+
+05.    statement = "{" {(expr | command)} "}"
+                 | [(expr | command)]
+
+06.    command = if
+               | while
+               | do-while
+               | for
+               | for-in
+               | delete
+               | "break" | "continue" | "next"
+               | exit
+               | return
+               | print
+               | getline
+
+07.    if = "if" "(" expr ")" statement ["else" statement]
+
+08.    while = "while" "(" expr ")" statement
+
+09.    do-while = "do" statement "while" "(" expr ")" endline
+
+10.    for = "for" "(" [expr]";" [expr] ";" [expr] ")" statement
+
+11.    for-in = "for" "(" variable "in" id ")" statement
+
+12.    delete = "delete" id "[" index "]" endline
+
+13.    exit = "exit" [expr] endline
+
+14.    return = "return" [expr] endline
+
+15.    print = "print" [expr-list] endline
+
+16.    getline = "getline" [variable] endline
+
+17.    expr-list = (expr | command | variable)
+                   {"," (expr | command | variable)}
+
+18.    variable = id
+                | "$"expr
+                | "ARGC" | "ARGIND" | "ARGV" | "BINMODE"
+                | "CONVFMT" | "ENVIRON" | "ERRNO"
+                | "FIELDWIDTHS" | "FILENAME" | "FNR" | "FS"
+                | "IGNORECASE"  | "LINT" | "NF" | "NR" | "OFMT"
+                | "OFS" | "ORS" | "PROCINFO" | "RS" | "RT"
+                | "RSTART" | "RLENGTH" | "SUBSEP" | "TEXTDOMAIN"
+
+19.    id = ("_" | letter) {"_" | alpha-numeric} 
+
+20.    index = number | string
+
+21.    lvalue = variable [ "[" index "]" ]
+
+22.    expr   = lvalue assign expr                | expr01
+       expr01 = expr02 "?"  expr01 ":" expr01     | expr02
+       expr02 = expr03 ("||" | "&&") expr02       | expr03
+       expr03 = "(" index ")" "in" id             | expr04
+       expr04 = expr05 "in" id                    | expr05
+       expr05 = expr06 comparison expr05          | expr06
+       expr06 = expr07 expr06                     | expr07
+       expr07 = expr08 arithmetic expr07          | expr08
+       expr08 = ("-" | "+"  | "!") expr09         | expr09 
+       expr09 = expr10 "^" expr09                 | expr10
+       expr10 = lvalue unary-op | unary-op lvalue | expr11
+       expr11 = "(" expr ")"                      | expr12
+       expr12 =  variable | constant
+
+23.    assign = "=" | "-=" | "+=" | "/=" | "*=" | "%=" | "^="
+
+24.    comparison = ">=" | ">" | "==" | "!=" | "<=" | "<"
+
+25.    arithmetic  = "-" | "+"  | "%"  |  "/" | "*"
+
+26.    unary-op =  "--" | "++"
+
+27.    constant = integer | float | string
+
+28.    integer = [sign] number
+
+29.    float = [sign] [number] "." number
+
+30.    string = """ [sentence] """
+
+31.    sentence = char {char}
+
+32.    char = alpha-numeric | symbol
+
+33.    alpha-numeric = (letter | digit) {letter | digit}
+
+34.    number = digit {digit}
+
+35.    digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7"
+             | "8" | "9"
+
+36.    letter = lowercase | uppercase
+
+37.    lowercase = "a" | "b" | "c" | "d" | "e" | "f" | "g"
+                 | "h" | "i" | "j" | "k" | "l" | "m" | "n"
+                 | "o" | "p" | "q" | "r" | "s" | "t"
+                 | "u" | "v" | "w" | "x" | "y" | "z"
+
+38.    uppercase = "A" | "B" | "C" | "D" | "E" | "F" | "G"
+                 | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+                 | "O" | "P" | "Q" | "R" | "S" | "T"
+                 | "U" | "V" | "W" | "X" | "Y" | "Z"
+
+39.    symbol = " " | "!" | """ | "#" | "$" | "%" | "&" | "'"
+              | "(" | ")" | "*" | "+" | "," | "-" | "." | "/"
+              | ":" | ";" | "<" | "=" | ">" | "?" | "@" | "["
+              | "\" | "]" | "^" | "_" | "`" | "{" | "|" | "}"
+              | "~"
+
+40.    sign = "+" | "-"
+
+41.    endline = ";"
+}

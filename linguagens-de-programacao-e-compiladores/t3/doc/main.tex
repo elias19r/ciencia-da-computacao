@@ -1,0 +1,115 @@
+% Inicializa o documento
+% define papel, tamanho global de fonte, tipo de documento
+\documentclass[a4paper, twoside, 12pt]{article}
+
+	% Multicolunas
+	\usepackage{multicol}
+
+	% Pacotes usados
+	\usepackage[utf8]{inputenc} % enconding de caracteres
+	\usepackage[brazil]{babel}  % locale pt_BR
+	\usepackage[lmargin=2cm, rmargin=2cm, tmargin=2cm, bmargin=2cm]{geometry} % margens da folha
+	\usepackage{indentfirst} % sempre indenta o primeiro parágrafo
+
+	% Matemática	
+	\usepackage{amsmath}
+	\usepackage{amsfonts}
+	\usepackage{gensymb}
+	
+	% Tabela longa que quebra entre as paginas
+	\usepackage{longtable}
+
+	% Para links e url
+	\usepackage[hidelinks]{hyperref}
+	
+	\usepackage{listings} % listagem de código-fonte
+	\renewcommand*{\lstlistingname}{Listagem} % texto para listagem de código
+	\usepackage{color} % cor para usar na listagem de código-fonte
+%	\usepackage{svg}
+	\usepackage{graphicx,xcolor} % para inserir imagens
+	\usepackage[nottoc,notlot,notlof]{tocbibind} % adiciona o tópico Referências ao Sumário
+	\usepackage{textcomp} % accesso \textquotesingle
+
+	% Para desenhar grafos
+	\usepackage{tikz}
+	\usetikzlibrary{arrows,positioning,shapes,decorations}
+
+	% Desenhar circulos
+%	\usepackage{tkz-euclide}
+%	\usetkzobj{all}
+
+	% Escrever algoritmos em pseudo-código
+%	\usepackage[portuguese,linesnumbered]{algorithm2e}
+
+	% Tabelas
+	\usepackage{booktabs}
+	\usepackage{caption}
+
+	% Estilos para usar nos grafos
+	\tikzset{
+		>=stealth',
+		punkt/.style={
+			rectangle,
+			text centered,
+			inner sep=0.7em,
+			draw,
+			fill=blue!5
+		},
+		pil/.style={
+			->,
+			thick,
+			shorten <=2pt,
+			shorten >=2pt
+		}
+	}
+
+	% Para plotar gráficos
+%	\usepackage{pgfplots}
+%	\pgfplotsset{width=10cm,compat=1.9}
+
+	% Define cores para o highlight de código-fonte
+	\definecolor{dkgreen}{rgb}{0,0.6,0}
+	\definecolor{gray}{rgb}{0.5,0.5,0.5}
+	\definecolor{mauve}{rgb}{0.58,0,0.82}
+	
+	% Define configuração para listagem de código-fonte em linguagem C
+	\lstset{
+		frame=tb,
+		language=C,
+		aboveskip=2mm,
+		belowskip=2mm,
+		showstringspaces=false,
+		columns=flexible,
+		basicstyle={\small\ttfamily},
+		numbers=none,
+		keywordstyle=\color{blue},
+		commentstyle=\color{dkgreen},
+		stringstyle=\color{mauve},
+		breaklines=true,
+		breakatwhitespace=false,
+		tabsize=4
+	}
+
+% Começo do documento
+\begin{document}
+
+	% Define algum espaçamento que eu não lembro, hehe :)
+	\setlength\parskip{0.3cm}
+
+	% Insere a Capa
+	\input{./input/capa.tex}
+	
+	% Reseta contador de página para 1 (assim não conta a Capa como página)
+	\setcounter{page}{1}
+	
+	% Insere as outras partes do documento
+	\input{./input/sumario.tex}
+	\input{./input/introducao.tex}
+	\input{./input/como-usar.tex}
+	\input{./input/organizacao-dos-arquivos.tex}
+	\input{./input/decisoes-de-projeto.tex}
+	\input{./input/conclusao.tex}
+	\input{./input/referencias.tex}
+
+% Fim do documento
+\end{document}

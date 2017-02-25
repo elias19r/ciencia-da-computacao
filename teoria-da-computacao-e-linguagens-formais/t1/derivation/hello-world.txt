@@ -1,0 +1,19 @@
+<program>
+->01 <instruction>
+->02 <pattern> { <action> }
+->03 BEGIN { <action> }
+->04 BEGIN { <statement> }
+->05 BEGIN { <command> }
+->06 BEGIN { <print> <endline> }
+->15 BEGIN { print <expr-list> ; }
+->17 BEGIN { print <constant> ; }
+->42 BEGIN { print <string> ; }
+->45 BEGIN { print " <sentence> " ; }
+->46 BEGIN { print " <char> <sentence> " ; }
+->47 BEGIN { print " <alpha-numeric> <sentence> " ; }
+->48 BEGIN { print " <letter> <sentence> " ; }
+->51 BEGIN { print " <uppercase> <sentence> " ; }
+->53 BEGIN { print "H <sentence> " ; }
+->46 BEGIN { print "H <char> <sentence> " ; }
+...
+->54 BEGIN { print "Hello World!"; }

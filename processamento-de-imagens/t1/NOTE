@@ -1,0 +1,36 @@
+Alguns pontos da "borders.pgm" para testes
+
+Circunferencia
+	62 62
+
+Elipse
+	173 49
+
+Quadrado
+	75 236
+
+Triangulo (area nao-fechada)
+	296 304
+
+Mao-livre-1
+	218 125
+
+Mao-livre-2 (area nao-fechada)
+	290 144
+
+Figura com retas
+	170 212
+	192 232
+	215 246
+	188 283
+	209 260 (area fechada com apenas 1 pixel)
+
+Circulos-1
+	418 187
+
+Circulos-2
+	418 143
+
+Circulos-3
+	418 106
+

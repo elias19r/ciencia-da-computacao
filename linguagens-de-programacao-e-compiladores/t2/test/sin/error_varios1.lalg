@@ -1,0 +1,28 @@
+program ; { esqueceu o nome do programa }
+	const c 10;  { esqueceu '=' }
+	var i, a, b d: integer; { esqueceu uma ',' nas variaveis }
+
+	procedure meu_proc(v: integer; x); { esqueceu tipo do segundo parametro }
+	var contador: string; { tipo de dado inexistente }
+	begin
+		contador := contador + * v; { usou '*' de modo errado }
+		write(contador);
+		write(x);
+	end;
+
+	function minha_func(v: integer, x: integer): integer; { usou ',' }
+
+begin
+	read(a);
+	read(b);
+	a = c; { fez atribuicao com sinal de '=' }
+	read d); { esqueceu '(' }
+
+	if b < then { esqueceu valor na condicao }
+		write(b);
+
+	for i := 10 to 20 { esqueceu 'do' }
+	begin
+		minha_func(a, d);
+	end;
+end { esqueceu '.' }

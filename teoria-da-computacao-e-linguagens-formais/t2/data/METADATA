@@ -1,0 +1,31 @@
+
+ANOTACOES PARA SABER DE ONDE FORAM TIRADAS AS INFORMACOES DOS INPUTS
+====================================================================
+
+http://horoscopovirtual.bol.uol.com.br/horoscopo
+diario  :  input1
+semanal :  input2 
+mensal  :  input3 
+
+http://mulher.uol.com.br/horoscopo/
+diario : input4
+
+http://horoscopo.estadao.com.br/
+input5
+
+http://delas.ig.com.br/horoscopo/
+input6
+
+http://vidaeestilo.terra.com.br/horoscopo
+diario : input7
+semana : input8
+mes    : input9
+
+http://horoscopo.ego.globo.com/
+input10
+
+http://capricho.abril.com.br/horoscopo/
+diaria : input11
+mensal : input12
+anual  : input13
+

@@ -1,0 +1,6 @@
+{ Esqueceu ',' na declaracao de variavel }
+program oi;
+var a, b c: integer;
+begin
+	a := 10;
+end.

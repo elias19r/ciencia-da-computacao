@@ -1,0 +1,31 @@
+\clearpage
+\section{Organização dos Arquivos \label{sec:organizacao-dos-arquivos}}
+
+O diretório do trabalho está organizado da seguinte maneira:
+
+\indent\indent\texttt{./doc} : diretório dos arquivos \LaTeX~fonte deste relatório.
+
+\indent\indent\texttt{./test} : diretório com exemplos de programa \texttt{LALG} para testes.\\
+\indent\indent\indent\texttt{|-- ./lex} : exemplos léxicos.\\
+\indent\indent\indent\texttt{|-- ./sem} : exemplos semânticos.\\
+\indent\indent\indent\texttt{|-- ./sin} : exemplos sintáticos.
+
+\indent\indent\texttt{\texttt{LALG}} : definição da linguagem \texttt{LALG}.
+
+\indent\indent\texttt{Makefile} : arquivo para automizar compilação e execução usando o utilitário \texttt{make}.
+
+\indent\indent\texttt{RELATORIO.pdf} : este relatório PDF compilado a partir de \texttt{./doc}.
+
+\indent\indent\texttt{README} : arquivo com instruções.
+
+\indent\indent\texttt{lalg.l} : programa \texttt{Lex} para a linguagem \texttt{LALG}.
+
+\indent\indent\texttt{lalg.y} : programa em \texttt{Bison} para a linguagem \texttt{LALG}.
+
+\indent\indent\texttt{lex.yy.c} : programa \texttt{C} gerado pelo \texttt{flex}.
+
+\indent\indent\texttt{y.tab.c} : programa principal \texttt{C} gerado pelo \texttt{bison}.
+
+\indent\indent\texttt{y.tab.h} : cabeçalho \texttt{C} gerado pelo \texttt{bison}.
+
+\indent\indent\texttt{main} : o programa principal a ser executado para fazer a análise semântica.

@@ -1,0 +1,14 @@
+{ Programa sem conteudo no corpo }
+program sem;
+	var a, b: integer;
+	var c: char;
+	c = '\a';
+	c = '\t';
+	c = '\x23';
+	c = '\654';
+	c = '\\';
+	c = '\'';
+	c = 'xx';
+	c = '\m';
+begin
+end.

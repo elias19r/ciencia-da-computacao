@@ -1,0 +1,40 @@
+{ Exemplo com varios erros de um vez! }
+program id_mal@;
+	{ Identificadores grandes e mal formados }
+	var uma_var_grande, a, var_mal#: integer;
+	var c: char;
+	var b: real;
+begin
+	read(a);
+	{ Token desconhecido antes de identificador e inteiro mal formado }
+	@a := a*2x / 4d5;
+
+	readd(b);
+	{ Numero inteiro e real muito grandes }
+	b := 23345543453435;
+	b := 23345.543453435;
+
+	{ Aqui nao da' erro, parece ok. Trata-se mais de um erro sintatico }
+	c.;
+	c.
+
+	{ Inteiro mal formado no 'for' }
+	for b := 1 to 0010 do
+	begin
+		{ Muitos numeros mal formados }
+		b := b-2.0+ 3.2d3
+			+ 0.3;3       + 32.5.4 * 66.   1.4;
+	end;
+	
+	c := 'e';
+	{ Erros na atribuicao de caractere }
+	c := 'ec';
+	c := 'e;
+	c := ''
+	c := 'erro;
+	c := ''
+
+	if a <> b then
+		write(a);
+end.
+# { Token desconhecido }

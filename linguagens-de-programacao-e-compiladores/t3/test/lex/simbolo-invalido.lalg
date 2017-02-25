@@ -1,0 +1,6 @@
+{ Testando se encontra simbolo invalido }
+program unknown;
+	var a: integer;
+begin
+	readd(a, @, 1);
+end.

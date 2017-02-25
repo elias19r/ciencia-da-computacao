@@ -1,0 +1,91 @@
+program test1;
+
+    { OK: declaracao de constantes }
+    const a = 10;
+    const b = 11;
+    const k = 238.11;
+    
+    { ERRO: constante ja declarada }
+    const a = 74.2;
+    
+    { OK: declaracao de variaveis}
+    var x, y: real;
+    var c, i, j: integer;
+    var opcao1, opcao2: char;
+    
+    { ERRO: variavel ja declarada }
+    var x: integer;
+
+    { OK: declaracao de procedimento }
+    procedure my_proc(x: integer; y, z: real);
+        { OK: declaracao de variaveis }
+        var i, j: integer;
+    begin
+        j := 7;
+        for i:=1 to 5 do
+        begin
+            { ERRO: variavel 'c' nao declarada neste escopo }
+            c := 5 * i + j * x + y + z;
+        end;
+
+    end;
+    
+    { ERRO: procedimento ja foi declarado }
+    procedure my_proc(x: integer; y, z: real);
+    begin
+    end;
+    
+begin
+    { OK: divisao entre inteiros }
+    c := 439 / 2;
+
+    { ERRO: tipo incompativel real <- integer }
+    x := a;
+    x := 25;
+
+
+    { ERROS: divisao entre nao-inteiros (mas faz atribuicao) }
+    y := 439.1 / 2;
+    y := 500.0 / 2.0;
+    
+    { OK: atribuicoes sem problemas }
+    opcao1 := 'A';
+    opcao2 := '\n';
+    c := a + b - 10;
+    x := k * 2.0;
+    x := y;
+    x := 12.57 * 6.3;
+
+    { ERRO: tipo incompativel integer <- real }
+    c := x;
+    c := 9.21;
+    
+    { OK: comandos sem problemas }
+    read(x, y);
+    write(x, y);
+
+    { OK: atribuicoes sem problemas }   
+    c := 9;
+    i := c + a + b;
+    j := i * 2;
+    
+    { ERRO: variavel nao declarada }
+    t := x;
+    
+    { OK: chamada sem problemas }
+    my_proc(c; x; y);
+    
+    my_proc;       { ERRO: argumentos insuficientes }
+    my_proc(c);    { ERRO: argumentos insuficientes }
+    my_proc(x);    { ERRO: argumentos insuficientes }
+    my_proc(c; y); { ERRO: argumentos insuficientes }
+    my_proc(c; x; y; j); { ERRO: argumentos demais }
+    my_proc(x; y; j);    { ERRO: tipos incompativies }
+    
+    { ERRO: procedimento nao declarado }
+    other_proc(x; y);
+    
+    { ERROS: comandos com variaveis de tipos diferentes }
+    read(x, c);
+    write(x, c);
+end.

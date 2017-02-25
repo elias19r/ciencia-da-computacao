@@ -1,0 +1,456 @@
+\section{Desenvolvimento \label{sec:desenvolvimento}}
+
+\subsection{O simulador Amnesia \label{subsec:amnesia}}
+
+De acordo com a página oficial do Amnesia \cite{bib:amnesia}:
+\begin{quote}``O Amnesia é um simulador de hierarquia de memória, de sistemas computacionais, com fins didáticos. Ele permite simular o comportamento de registradores em um processador, memórias cache, memória principal e memória virtual paginada.
+
+O Amnesia representa as estruturas de hardware e software usadas pela hierarquia de memória, a funcionalidade das mesmas e o impacto no desempenho quando esta hierarquia é usada. Diferentes configurações da hierarquia de memória podem ser estabelecidas e comparadas durante as atividades de simulação.''
+\end{quote}
+
+Isso faz desse simulador uma boa escolha para este trabalho, pois atende à necessidade de definir diferentes configurações de hierarquia de memória (arquiteturas) para as simulações. E ainda, é um \textit{software} desenvolvido e mantido pela própria instituição de ensino da disciplina deste trabalho:
+\begin{quote}
+``O simulador está em desenvolvimento, desde 2007, por alunos de graduação e da pós-graduação do Instituto de Ciências Matemáticas e de Computação (ICMC) da Universidade de São Paulo (USP), orientados pelos professores Paulo Sérgio Lopes de Souza e Sarita Mazzini Bruschi.''
+\end{quote}
+
+\textbf{Observação}: importante ressaltar que o Amnesia é um simulador com propósito didático que incorpora características de Objetos de Aprendizagem (OA) e Recursos Educacionais Abertos (REA) para auxiliar professores e alunos durante o processo de aprendizagem. Portanto, não é adequado usá-lo para um processo de \textit{benchmark} que também não é o propósito deste trabalho.
+
+\subsection{Arquivos de \textit{trace} \label{subsec:trace}}
+
+Arquivos de \textit{trace}, ou arquivos de rastro, são arquivos de texto ASCII que contém em cada linha uma dupla: rótulo (decimal) e endereço (hexadecimal). Qualquer outra informação é vista como um comentário. O rótulo representa uma operação de memória a ser feita sobre o endereço. O rótulo pode ser:
+\begin{itemize}[noitemsep]
+	\item 0: leitura de dados;
+	\item 1: gravação de dados;
+	\item 2: busca de instrução;
+	\item 3: registro escape (tratado como tipo de acesso desconhecido);
+	\item 4: registro escape (operação de cache flush).
+\end{itemize}
+
+\textbf{Observação}: como o objetivo deste trabalho é analisar a taxa de acerto e não foi considerada uma política de escrita para as \textit{caches}, então o rótulo utilizado para as operações é indiferente. Por definição, foi utilizado o \textbf{rótulo 2} para todas operações dos arquivos de \textit{trace}.
+
+Os arquivos de \textit{trace} para este trabalho foram criados de tal modo que as heurísticas do princípio de localidade espacial e temporal fossem exploradas. Assim, criou-se quatro arquivos tais que: um não houvesse localidade espacial e nem temporal, um houvesse somente localidade espacial, um houvesse somente localidade temporal e outro com ambos os princípios de localidade. Além disso, criou-se um quinto arquivo de \textit{trace} com endereços aleatórios na tentativa de avaliar o algoritmo de substituição.
+
+Para gerar os arquivos de \textit{trace}, usou-se um programa simples em linguagem C, \texttt{trace\char`_gen.c}, que imprime na saída padrão um arquivo de \textit{trace} com um dos casos citados acima.
+
+Com exceção do primeiro \textit{trace}, a \textbf{quantidade de operações} foi definida em \textbf{32768}, pois assim é possível que um \textit{trace} acesse cada palavra da memória principal cujo tamanho está especificado mais adiante na Seção~\ref{subsec:arquiteturas}.
+
+Devido ao tamanho dos arquivos de \textit{trace}, não é conveniente inseri-los inteiramente neste documento. Então seguem trechos dos arquivos com comentários sobre suas características.
+
+\subsubsection{Não-espacial e não-temporal}
+
+Gerado com:
+\begin{verbatim}
+    for (i = 0; i < 2978; i++) {
+        printf("2 %x\n", (i * 11));
+    }
+\end{verbatim}
+
+Trecho do arquivo \texttt{trace-00.txt}:
+\begin{verbatim}
+    2 0
+    2 b
+    2 16
+    2 21
+    2 2c
+    2 37
+    ...
+\end{verbatim}
+
+Neste \textit{trace} os endereços das palavras tem um intervalo suficientemente grande: 11 que é maior do que qualquer uma das quantidades de palavras por bloco presentes nas arquiteturas definidas. Isso proporciona característica não-espacial. Além disso, não é feito acesso repetido a um mesmo endereço o que proporciona característica não-temporal. Em particular, a quantidade de operações deste \textit{trace} é menor, pois caso contrário seriam gerados endereços de palavras inexistentes na memória principal.
+
+\subsubsection{Espacial}
+
+Gerado com:
+\begin{verbatim}
+    for (i = 0; i < 32768; i++) {
+        printf("2 %x\n", i);
+    }
+\end{verbatim}
+
+Trecho do arquivo \texttt{trace-01.txt}:
+
+\begin{verbatim}
+    2 0
+    2 1
+    2 2
+    2 3
+    2 4
+    2 5
+    2 6
+    ...
+\end{verbatim}
+
+Neste \textit{trace} os endereços das palavras são bem próximos (consecutivos), porém com nenhum acesso repetido. Isso proporciona característica espacial e não-temporal.
+
+\subsubsection{Temporal}
+
+Gerado com:
+\begin{verbatim}
+    int *address = (int *)malloc(sizeof(int) * 96);
+
+    address[0] = 0;
+    for (i = 1; i < 96; i++) {
+        address[i] = address[i-1] + 11;
+    }
+    for (i = 0; i < 32768; i++) {
+        printf("2 %x\n", address[i % 96]);
+    }
+
+    free(address);
+\end{verbatim}
+
+Trecho do arquivo \texttt{trace-10.txt}:
+
+\begin{verbatim}
+    2 0
+    2 b
+    2 16
+    2 21
+    2 2c
+    ...
+    2 0  nonagésima sétima operação: começa a repetir
+    2 b
+    2 16
+    ...
+\end{verbatim}
+
+Neste \textit{trace} os endereços são de palavras distantes (novamente 11 posições de distância que é suficiente para não serem do mesmo bloco em nenhuma das \textit{caches}), porém a cada 96 operações são realizados acessos repetidos aos mesmos endereços anteriores. Isso proporciona característica temporal e não-espacial.
+
+\subsubsection{Espacial e temporal}
+
+Gerado com:
+\begin{verbatim}
+    for (i = 0; i < 32768; i++) {
+        printf("2 %x\n", i % 320);
+    }
+\end{verbatim}
+
+Trecho do arquivo \texttt{trace-11.txt}:
+
+\begin{verbatim}
+    2 0
+    2 1
+    2 2
+    2 3
+    2 4
+    2 5
+    ...
+    2 0 tricentésima vigésima primeira operação: começa a repetir
+    2 1
+    2 2
+    ...
+\end{verbatim}
+
+Neste \textit{trace} os endereços das palavras são bem próximos (consecutivos) e ocorre repetição dos endereços a cada 320 operações. Isso proporciona característica espacial e temporal.
+
+\subsubsection{Aleatório}
+
+Gerado com:
+\begin{verbatim}
+    srand(time(NULL));
+    for (i = 0; i < 32768; i++) {
+        printf("2 %x\n", rand() % 192);
+    }
+\end{verbatim}
+
+Trecho do arquivo \texttt{trace-rand.txt}:
+
+\begin{verbatim}
+    2 16
+    2 2a
+    2 59
+    2 b9
+    2 40
+    2 65
+    ...
+\end{verbatim}
+
+Neste \textit{trace} os endereços das palavras foram gerados aleatoriamente dentro um intervalo de 0 a 191 usando a função \texttt{rand()} da linguagem C.
+
+\subsection{Arquiteturas \label{subsec:arquiteturas}}
+
+Foram definidas uma arquitetura base e outras dez arquiteturas com configurações variadas a partir da arquitetura base. Toda \textbf{palavra} tem tamanho fixo de \textbf{4~bytes (32~bits)} e a \textbf{memória principal é endereçada a byte}.
+
+Como citado anteriormente, o propósito deste trabalho e do simulador Amnesia não é o de \textit{benchmark}, portanto as configurações foram escolhidas de acordo com as limitações do simulador e também dos computadores pessoais do grupo do trabalho usados para executar o simulador. O tamanho da \textbf{memória principal} é fixo de \textbf{128KiB} (portanto 32768 palavras) e os tamanhos para as \textbf{\textit{caches}} podem ser de \textbf{512B}, \textbf{1KiB} e \textbf{2KiB}.
+
+No Amnesia, o arquivo de arquitetura é definido no formato XML e um exemplo de arquitetura pode ser consultado no manual que acompanha o simulador.
+
+\textbf{Observação}: as \textit{caches} definidas para este trabalho são todas do tipo \textbf{unified}, ou seja, não há separação dentro da \textit{cache} entre as palavras que representam instruções e as que representam dados como há no tipo \textit{split}. Como políticas de escrita não foram consideradas e por definição as operações de memória são apenas de busca de instrução (rótulo 2), não há motivo para escolher o tipo \textit{split}.
+
+\subsubsection{Base \label{subsubsec:base}}
+
+A arquitetura base foi definida no arquivo \texttt{arch-00.xml} e possui as configurações especificadas na Tabela~\ref{tab:base}.
+
+\begin{table}[h!]
+\centering
+\caption{Configuração da arquitetura base.}
+\label{tab:base}
+\begin{tabular}{|c|l|c|c|c|}
+\specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-00}}                                                                                                            \\ \hline
+\textbf{Cache} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{Palavras por bloco} & \textbf{Mapeamento} & \textbf{Substituição} \\ \hline
+\textbf{L1} & 128 palavras  (512B)  & 2  & Direto & ----- \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Variadas \label{subsubsec:variadas}}
+
+As dez arquiteturas variadas foram definidas nos respectivos arquivos \texttt{arch-01.xml}, \texttt{arch-02.xml}, \texttt{...}, \texttt{arch-10.xml} e possuem as configurações especificadas na Tabela~\ref{tab:variadas}.
+
+\begin{table}[!htbp]
+\centering
+\caption{Configurações variadas. Em itálico estão os valores alterados com relação a arquitetura base.}
+\label{tab:variadas}
+\begin{tabular}{|c|l|c|c|c|}
+\specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-01}} \\ \hline
+\textbf{Cache} & \multicolumn{1}{c|}{\textbf{\textit{Tamanho}}} & \textbf{Palavras por bloco} & \textbf{Mapeamento} & \textbf{Substituição} \\ \hline
+\textbf{L1} & \textit{256 palavras  (1KiB)}  & 2  & Direto & ----- \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-02}} \\ \hline
+\textbf{Cache} & \multicolumn{1}{c|}{\textbf{\textit{Tamanho}}} & \textbf{Palavras por bloco} & \textbf{Mapeamento} & \textbf{Substituição} \\ \hline
+\textbf{L1} & \textit{512 palavras  (2KiB)}  & 2  & Direto & ----- \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-03}} \\ \hline
+\textbf{Cache} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{\textit{Palavras por bloco}} & \textbf{Mapeamento} & \textbf{Substituição} \\ \hline
+\textbf{L1} & 128 palavras  (512B)  & \textit{4}  & Direto & ----- \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-04}} \\ \hline
+\textbf{Cache} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{\textit{Palavras por bloco}} & \textbf{Mapeamento} & \textbf{Substituição} \\ \hline
+\textbf{L1} & 128 palavras  (512B)  & \textit{8}  & Direto & ----- \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-05}} \\ \hline
+\textbf{Cache} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{Palavras por bloco} & \textbf{\textit{Mapeamento}} & \textbf{Substituição} \\ \hline
+\textbf{L1} & 128 palavras  (512B)  & 2  & \textit{Associativo (2)} & FIFO \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-06}} \\ \hline
+\textbf{Cache} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{Palavras por bloco} & \textbf{\textit{Mapeamento}} & \textbf{Substituição} \\ \hline
+\textbf{L1} & 128 palavras  (512B)  & 2  & \textit{Associativo (4)} & FIFO \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-07}} \\ \hline
+\textbf{Cache} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{Palavras por bloco} & \textbf{Mapeamento} & \textbf{\textit{Substituição}} \\ \hline
+\textbf{L1} & 128 palavras  (512B)  & 2  & \textit{Associativo (4)} & \textit{LRU} \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-08}} \\ \hline
+\textbf{\textit{Cache}} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{Palavras por bloco} & \textbf{Mapeamento} & \textbf{Substituição} \\ \hline
+\textbf{L1} & 128 palavras (512B) & 2  & Direto & ----- \\ \hline
+\textbf{\textit{L2}} & \textit{256 palavras (1KiB)} & 2  & Direto & ----- \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-09}} \\ \hline
+\textbf{\textit{Cache}} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{Palavras por bloco} & \textbf{Mapeamento} & \textbf{Substituição} \\ \hline
+\textbf{L1} & 128  palavras (512B) & 2  & Direto & ----- \\ \hline
+\textbf{\textit{L2}} & \textit{256 palavras  (1KiB)} & 2  & Direto & ----- \\ \hline
+\textbf{\textit{L3}} & \textit{512 palavras  (2KiB)} & 2  & Direto & ----- \\ \hline
+\multicolumn{1}{l}{} \\ \specialrule{2pt}{0pt}{0pt}
+\multicolumn{5}{|c|}{\textbf{arch-10}} \\ \hline
+\textbf{\textit{Cache}} & \multicolumn{1}{c|}{\textbf{Tamanho}} & \textbf{Palavras por bloco} & \textbf{Mapeamento} & \textbf{Substituição} \\ \hline
+\textbf{L1} & 128  palavras (512B) & 2  & Direto & ----- \\ \hline
+\textbf{\textit{L2}} & \textit{256 palavras  (1KiB)} & \textit{4}  & \textit{Associativo (2)} & \textit{LRU} \\ \hline
+\textbf{\textit{L3}} & \textit{512 palavras  (2KiB)} & \textit{8}  & \textit{Associativo (4)} & \textit{LRU} \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Resultados das execuções}
+
+Para cada arquitetura, foram executados os cinco arquivos de \textit{trace} no simulador Amnesia. As taxas de acerto coletadas são mostradas na Tabela~\ref{tab:geral}.
+
+\begin{table}[!htbp]
+\centering
+\caption{Taxa de acerto para cada arquitetura e arquivo de \textit{trace}.}
+\label{tab:geral}
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+\multicolumn{1}{|c|}{\textbf{arch-}} & \textbf{Cache} & \multicolumn{1}{c|}{\textbf{trace-00}} & \multicolumn{1}{c|}{\textbf{trace-01}} & \multicolumn{1}{c|}{\textbf{trace-10}} & \multicolumn{1}{c|}{\textbf{trace-11}} & \multicolumn{1}{c|}{\textbf{trace-rand}} & \multicolumn{1}{c|}{\textbf{Média}} \\ \specialrule{2pt}{0pt}{0pt}
+\textbf{00}                  & L1 & 0 & 0.5   & 0.332489    & 0.5        & 0.66537476 & 0.49946594 \\ \hline
+\textbf{01}                  & L1 & 0 & 0.5   & 0.97628784  & 0.796875   & 0.9970703 & 0.817558285 \\ \hline
+\textbf{02}                  & L1 & 0 & 0.5   & 0.97628784  & 0.9951172  & 0.9970703 & 0.867118835 \\ \hline
+\textbf{03}                  & L1 & 0 & 0.75  & 0           & 0.75       & 0.66882324 & 0.54220581 \\ \hline
+\textbf{04}                  & L1 & 0 & 0.875 & 0           & 0.875      & 0.6715698 & 0.60539245 \\ \hline
+\textbf{05}                  & L1 & 0 & 0.5   & 0.020751953 & 0.5        & 0.6673279 & 0.42201996325 \\ \hline
+\textbf{06}                  & L1 & 0 & 0.5   & 0           & 0.5        & 0.66674805 & 0.4166870125 \\ \hline
+\textbf{07}                  & L1 & 0 & 0.5   & 0           & 0.5        & 0.66656494 & 0.416641235 \\ \specialrule{2pt}{0pt}{0pt}
+\multirow{2}{*}{\textbf{08}} & L1 & 0 & 0.5   & 0.332489    & 0.5        & 0.66537476 & 0.49946594\\ \cline{2-8}
+                             & L2 & 0 & 0     & 0.96447676  & 0.59375    & 0.99124485 & 0.6373679025\\ \specialrule{2pt}{0pt}{0pt}
+\multirow{3}{*}{\textbf{09}} & L1 & 0 & 0.5   & 0.332489    & 0.5        & 0.66537476 & 0.49946594\\ \cline{2-8}
+                             & L2 & 0 & 0     & 0.96447676  & 0.59375    & 0.99124485 & 0.6373679025\\ \cline{2-8}
+                             & L3 & 0 & 0     & 0           & 0.97596157 & 0          & 0.2439903925\\ \specialrule{2pt}{0pt}{0pt}
+\multirow{3}{*}{\textbf{10}} & L1 & 0 & 0.5   & 0.332489    & 0.5        & 0.66537476 & 0.49946594\\ \cline{2-8}
+                             & L2 & 0 & 0.5   & 0.86983955  & 0.6982422  & 0.99562246 & 0.7659260525\\ \cline{2-8}
+                             & L3 & 0 & 0.5   & 0.95539165  & 0.9919094  & 0.5        & 0.7368252625\\ \hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Relação da taxa de acerto com o tamanho da \textit{cache}}
+
+Para avaliar o impacto do tamanho da \textit{cache} na taxa de acerto, contrastou-se as taxas de acerto das arquiteturas arch-00, arch-01 e arch-02. O resultado pode ser visto na Figura~\ref{fig:tamanho}.
+
+Foi possível observar que o aumento no tamanho da \textit{cache} implicou no aumento da taxa de acerto como esperado. Quanto maior o tamanho da \textit{cache}, menor é a quantidade de falhas por capacidade, pois menos blocos disputam por uma mesma posição.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+    \begin{axis}[
+        width  = 0.8*\textwidth,
+        height = 6cm,
+        major x tick style = transparent,
+        ybar=2*\pgflinewidth,
+        bar width=14pt,
+        ymajorgrids = true,
+        ylabel = {Taxa de acerto},
+        symbolic x coords={arch-$00$ ($512$B), arch-$01$ ($1$KiB), arch-$02$ ($2$KiB)},
+        xtick = data,
+        scaled y ticks = false,
+        enlarge x limits=0.25,
+        ymin=0,
+        legend cell align=left,
+        legend style={
+                at={(1.25,0.15)},
+                anchor=south east,
+                column sep=1ex
+        },
+        legend entries={trace-$00$,trace-$01$,trace-$10$,trace-$11$, trace-rand,Média}
+    ]
+        \addplot[style={bblue,fill=bblue,mark=none}]
+coordinates {(arch-$00$ ($512$B), 0)          (arch-$01$ ($1$KiB), 0)         (arch-$02$ ($2$KiB), 0)};
+       
+        \addplot[style={rred,fill=rred,mark=none}]
+coordinates {(arch-$00$ ($512$B), 0.5)        (arch-$01$ ($1$KiB), 0.5)       (arch-$02$ ($2$KiB),0.5)};
+
+        \addplot[style={ggreen,fill=ggreen,mark=none}]
+coordinates {(arch-$00$ ($512$B), 0.332489)   (arch-$01$ ($1$KiB), 0.97628784) (arch-$02$ ($2$KiB),0.97628784)};
+
+        \addplot[style={ppurple,fill=ppurple,mark=none}]
+coordinates {(arch-$00$ ($512$B), 0.5)        (arch-$01$ ($1$KiB), 0.796875)   (arch-$02$ ($2$KiB),0.9951172)};
+
+        \addplot[style={yyellow,fill=yyellow,mark=none}]
+coordinates {(arch-$00$ ($512$B), 0.66537476) (arch-$01$ ($1$KiB), 0.9970703)  (arch-$02$ ($2$KiB),0.9970703)};
+
+        \addplot[style={ggray,fill=ggray,mark=none}]
+coordinates {(arch-$00$ ($512$B), 0.49946594) (arch-$01$ ($1$KiB), 0.817558285) (arch-$02$ ($2$KiB),0.867118835)};
+
+    \end{axis}
+\end{tikzpicture}
+\caption{Comparação da taxa acerto com relação ao tamanho da \textit{cache}. \label{fig:tamanho}}
+\end{figure}
+
+\subsubsection{Relação da taxa de acerto com o tamanho do bloco}
+
+Para avaliar o impacto do tamanho do bloco na taxa de acerto, contrastou-se as taxas de acerto das arquiteturas arch-00, arch-03 e arch-04. O resultado pode ser visto na Figura~\ref{fig:bloco}.
+
+Quanto ao trace-rand, houve pouca variação na taxa de acerto, mas foi possível observar que a média de acertos aumentou conforme o tamanho do bloco.
+
+Significativamente, observou-se aumento para os trace-01 e trace-11 e declínio para zero do trace-10. Isso aconteceu pois, uma vez que o tamanho do bloco foi aumentado, os trace-01 e trace-11 que possuem princípio de localidade espacial tem mais chance de acerto já que uma maior quantidade de palavras são copiadas para a \textit{cache}. Quanto ao declínio para zero do trace-10 deve-se ao fato dele possuir somente característica temporal, o que leva a um pior desempenho com blocos maiores, pois ocorre sobrescrita das palavras que possivelmente seriam utilizadas novamente durante a execução.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+    \begin{axis}[
+        width  = 0.8*\textwidth,
+        height = 6cm,
+        major x tick style = transparent,
+        ybar=2*\pgflinewidth,
+        bar width=14pt,
+        ymajorgrids = true,
+        ylabel = {Taxa de acerto},
+        symbolic x coords={arch-$00$ ($2$ palavras), arch-$03$ ($4$ palavras), arch-$04$ ($8$ palavras)},
+        xtick = data,
+        scaled y ticks = false,
+        enlarge x limits=0.25,
+        ymin=0,
+        legend cell align=left,
+        legend style={
+                at={(1.25,0.15)},
+                anchor=south east,
+                column sep=1ex
+        },
+        legend entries={trace-$00$,trace-$01$,trace-$10$,trace-$11$, trace-rand,Média}
+    ]
+        \addplot[style={bblue,fill=bblue,mark=none}]
+coordinates {(arch-$00$ ($2$ palavras), 0)          (arch-$03$ ($4$ palavras), 0)         (arch-$04$ ($8$ palavras), 0)};
+       
+        \addplot[style={rred,fill=rred,mark=none}]
+coordinates {(arch-$00$ ($2$ palavras), 0.5)        (arch-$03$ ($4$ palavras), 0.75)       (arch-$04$ ($8$ palavras),0.875)};
+
+        \addplot[style={ggreen,fill=ggreen,mark=none}]
+coordinates {(arch-$00$ ($2$ palavras), 0.332489)   (arch-$03$ ($4$ palavras), 0) (arch-$04$ ($8$ palavras),0)};
+
+        \addplot[style={ppurple,fill=ppurple,mark=none}]
+coordinates {(arch-$00$ ($2$ palavras), 0.5)        (arch-$03$ ($4$ palavras), 0.75)   (arch-$04$ ($8$ palavras),0.875)};
+
+        \addplot[style={yyellow,fill=yyellow,mark=none}]
+coordinates {(arch-$00$ ($2$ palavras), 0.66537476) (arch-$03$ ($4$ palavras), 0.66882324)  (arch-$04$ ($8$ palavras),0.6715698)};
+
+        \addplot[style={ggray,fill=ggray,mark=none}]
+coordinates {(arch-$00$ ($2$ palavras), 0.49946594) (arch-$03$ ($4$ palavras), 0.54220581) (arch-$04$ ($8$ palavras),0.60539245)};
+
+    \end{axis}
+\end{tikzpicture}
+\caption{Comparação da taxa acerto com relação ao tamanho do bloco. \label{fig:bloco}}
+\end{figure}
+
+\subsubsection{Relação da taxa de acerto com o nível de associatividade}
+
+Para avaliar o impacto do nível de associatividade na taxa de acerto, contrastou-se as taxas de acerto das arquiteturas arch-00, arch-05 e arch-06. O resultado pode ser visto na Figura~\ref{fig:associatividade}.
+
+Quanto ao trace-01 e trace-11, que possuem característica espacial, não houve diferença na taxa de acerto, pois o tamanho do bloco não foi aumentado. Por outro lado, para o trace-10 que possui somente característica temporal, houve diminuição na taxa de acerto conforme o aumento do nível de associatividade. Esse comportamento é esperado para este \textit{trace}, pois foi aumentado o nível de associatividade sem aumentar o tamanho do bloco o que gerou mais falhas para localidade temporal.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+    \begin{axis}[
+        width  = 0.8*\textwidth,
+        height = 6cm,
+        major x tick style = transparent,
+        ybar=2*\pgflinewidth,
+        bar width=14pt,
+        ymajorgrids = true,
+        ylabel = {Taxa de acerto},
+        symbolic x coords={arch-$00$ (direto), arch-$05$ (assoc. $2$), arch-$06$ (assoc. $4$)},
+        xtick = data,
+        scaled y ticks = false,
+        enlarge x limits=0.25,
+        ymin=0,
+        legend cell align=left,
+        legend style={
+                at={(1.25,0.15)},
+                anchor=south east,
+                column sep=1ex
+        },
+        legend entries={trace-$00$,trace-$01$,trace-$10$,trace-$11$, trace-rand,Média}
+    ]
+        \addplot[style={bblue,fill=bblue,mark=none}]
+coordinates {(arch-$00$ (direto), 0)          (arch-$05$ (assoc. $2$), 0)         (arch-$06$ (assoc. $4$), 0)};
+       
+        \addplot[style={rred,fill=rred,mark=none}]
+coordinates {(arch-$00$ (direto), 0.5)        (arch-$05$ (assoc. $2$), 0.5)       (arch-$06$ (assoc. $4$),0.5)};
+
+        \addplot[style={ggreen,fill=ggreen,mark=none}]
+coordinates {(arch-$00$ (direto), 0.332489)   (arch-$05$ (assoc. $2$), 0.020751953) (arch-$06$ (assoc. $4$),0)};
+
+        \addplot[style={ppurple,fill=ppurple,mark=none}]
+coordinates {(arch-$00$ (direto), 0.5)        (arch-$05$ (assoc. $2$), 0.5)   (arch-$06$ (assoc. $4$),0.5)};
+
+        \addplot[style={yyellow,fill=yyellow,mark=none}]
+coordinates {(arch-$00$ (direto), 0.66537476) (arch-$05$ (assoc. $2$), 0.6673279)  (arch-$06$ (assoc. $4$),0.66674805)};
+
+        \addplot[style={ggray,fill=ggray,mark=none}]
+coordinates {(arch-$00$ (direto), 0.49946594) (arch-$05$ (assoc. $2$), 0.42201996325) (arch-$06$ (assoc. $4$),0.4166870125)};
+
+    \end{axis}
+\end{tikzpicture}
+\caption{Comparação da taxa acerto com relação o nível de associatividade. \label{fig:associatividade}}
+\end{figure}
+
+\newpage
+\subsubsection{Relação da taxa de acerto com o algoritmo de substituição}
+
+Para avaliar a taxa de acerto com relação ao algoritmo de substituição, observou-se as arquiteturas arch-06 e arch-07. Pela Tabela~\ref{tab:geral}, pode-se notar que a diferença entre as duas foi mínima, havendo pequena alteração somente para o trace-rand. Isso mostra que os arquivos de \textit{trace} gerados não foram suficientes para avaliar o algoritmo de substituição. Com exceção do trace-rand, os demais \textit{traces} tem padrões de acesso sistemáticos o que implica na indiferença do algoritmo de substituição escolhido.
+
+\subsubsection{Relação da taxa de acerto com o número de \textit{caches}}
+
+Para avaliar o impacto do número de \textit{caches} na taxa de acerto, contrastou-se as taxas de acerto das arquiteturas arch-00, arch-08 e arch-09. Notoriamente o aumento do número de \textit{caches} diminui a quantidade de acessos à memória principal, pois proporciona mais alternativas de acesso. O problema que o número de \textit{caches} pode ocasionar é com relação à atualização dos dados (escrita) que não foi abordada nesse trabalho.
+
+\subsubsection{Combinação das arquiteturas}
+
+A arquitetura arch-10 proposta é uma combinação das demais com o objetivo de conseguir um melhor desempenho. A partir da Tabela~\ref{tab:geral} constatou-se que houve um melhor desempenho, pois com exceção das arquiteturas arch-01 e arch-02 que possuem tamanho da L1 maior, a arch-10 proporcionou, em média geral, uma taxa de acerto maior que todas as demais arquiteturas.

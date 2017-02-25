@@ -1,0 +1,26 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+SSC0141 Sistemas Operacionais 2
+
+---------------------------------------------------
+ nutshell - Entrega final - 2014/07/07
+---------------------------------------------------
+
+Elias Italiano Rodrigues  7987251
+Rafael Andreatta Martins  7564019
+Rodolfo Megiato de Lima   7987286
+Vinicius Katata Biondo    6783972
+
+---------------------------------------------------
+ Sobre o codigo
+---------------------------------------------------
+
+- Foi utilizado o modelo do shell Foosh disponibilizado pelo professor.
+- A implementacao das funcionalidades do shell foram feitas dentro do arquivo main.c na funcao main()
+- Foi criada uma funcao execute_pipeline() em main.c:96 que faz a execucao recursiva de
+  comandos em pipeline.
+- A estrutura pipeline_t definida em nutshell.h:41 foi alterada com a adicao de uma variavel
+  int redirect parar suportar o comando ">>" de append e junto a isso novas macros foram definidas
+  em nutshell.h:37,72
+- Uma pequena alteracao na funcao find_modifiers() em parser.c:196 foi necessaria tambem para o suporte
+  ao comando ">>" de append

@@ -1,0 +1,40 @@
+University of Sao Paulo
+Institute of Mathematics and Computer Science
+
+SCC0272 -- Introduction to Bio-inspired Computing 
+
+Elias Italiano Rodrigues 7987251
+Vinicius Katata Biondo   6783972
+
+----------------------------------------------
+ Homework 3 -- ACO to solve a TSP
+----------------------------------------------
+
+This work implements a version of the ACO (Ant Colony Optimization)
+algorithm to solve TSP (Travelling Salesman Problem).
+The data used to test the code were acquired from TSPLIB at
+http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/tsp/
+
+-------------------------------------------
+ How to compile
+-------------------------------------------
+
+To compile:
+	make
+
+To compile an optimized -O2 version:
+	make done
+
+It requires a `gcc' compiler, `math' and `pthread' libs,
+and `make' on a Linux operating system.
+
+-------------------------------------------
+ How to run
+-------------------------------------------
+
+Simply run:
+	./aco-tsp
+and the program will use the defaults parameters.
+
+In order to know more about the paremeters, run:
+	./aco-tsp --help

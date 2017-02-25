@@ -1,0 +1,16 @@
+Este trabalho, dentro dos tópicos de Classes de Complexidade (Complexity
+Classes) da disciplina de Linguagens Formais e Teoria da Computação, consiste em
+explicar do que se trata o Problema da Soma dos Subconjuntos
+(Subset Sum Problem) e apresentar uma prova de sua NP-completude.
+Por ser um problema conhecido e já estudado, este trabalho é um exercício
+de pesquisa em que são consultadas referências na literatura e sintetizadas
+aqui pelo grupo.
+
+Todo material pesquisado para este trabalho encontra-se nos capítulos 34 e 35
+do livro Introduction to Algorithms [1] sugerido como referência nos slides
+de aula da disciplina.
+
+[1] Cormen, T.H. Leiserson, CE. Rivest, R.L. and Stein, C.
+Introduction to Algorithms
+The MIT Press. (3rd ed.).
+

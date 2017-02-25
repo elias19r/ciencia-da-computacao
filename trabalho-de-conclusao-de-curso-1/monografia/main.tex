@@ -1,0 +1,85 @@
+\documentclass[english]{./packages/icmc}
+
+\input{./tex/pre-textual/capa}
+
+% Numeração de páginas em romano para o pré-textual
+\pagenumbering{roman}
+
+\input{./tex/pre-textual/resumos}
+
+% ---
+% Configuracoes de aparencia do PDF final
+% ---
+% alterando o aspecto da cor azul
+\definecolor{blue}{RGB}{41,5,195}
+% informacoes do PDF
+\makeatletter
+\hypersetup{
+	pagebackref=true,
+	pdftitle={\@title}, 
+	pdfauthor={\@author},
+	pdfsubject={\imprimirpreambulo},
+	pdfcreator={LaTeX with abnTeX2/ICMC-USP},
+	pdfkeywords={\palavraschave}, 
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue,
+	filecolor=magenta,
+	urlcolor=blue,
+	bookmarksdepth=4
+}
+\makeatother
+% --- 
+
+
+% ----------------------------------------------------------
+% ELEMENTOS PRE-TEXTUAIS
+% ----------------------------------------------------------
+
+% Inserir a ficha catalografica
+% \incluifichacatalografica[./tex/pre-textual/ficha-catalografica.pdf]
+\incluifichacatalografica
+
+% Inserir folha de aprovacao
+% \includepdf{./tex/pre-textual/folha-aprovacao_final.pdf}
+\incluifolhadeaprovacao
+
+\textodedicatoria*{./tex/pre-textual/dedicatoria}
+\textoepigrafe*{./tex/pre-textual/epigrafe}
+
+% Inclui a lista de figuras
+\incluilistadefiguras
+
+\begin{document}
+% ----------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ----------------------------------------------------------
+\textual
+
+% Numeração de páginas normal para o conteúdo
+\pagenumbering{arabic}
+
+% Conteúdo do documento
+\input{./tex/capitulos/introducao}
+\input{./tex/capitulos/bitcoin-intro}
+\input{./tex/capitulos/bitcoin-tech}
+\input{./tex/capitulos/escalabilidade}
+\input{./tex/capitulos/conclusao}
+
+% ---
+% Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
+% ---
+\bookmarksetup{startatroot}% 
+% ---
+
+% ----------------------------------------------------------
+% ELEMENTOS POS-TEXTUAIS
+% ----------------------------------------------------------
+\postextual
+
+% ----------------------------------------------------------
+% Referencias bibliograficas
+% ----------------------------------------------------------
+\bibliography{referencias}
+
+\end{document}

@@ -1,0 +1,10 @@
+{ Identificadores e numeros grandes }
+program grande;
+	var a, minha_variavel_grande, b: integer;
+	var c: real;
+begin
+	a := 10;
+	minha_variavel_grande := 1;
+	b := 4367827438743827421;
+	c := 0.324356213425454531;
+end.

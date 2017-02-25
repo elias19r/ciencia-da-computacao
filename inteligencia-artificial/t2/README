@@ -1,0 +1,8 @@
+Este programa pre-processa o arquivo de dados das compras para gerar um .arff
+que e' dado como entrada no software Weka.
+
+Para rodar, execute:
+	./run.sh ./data/1mes_pre.apr.data [#nfreq]
+
+O parametro `nfreq' e' opcional; se definido ele cria o .arff com a
+ocorrencia minima dos produtos igual a nfreq.

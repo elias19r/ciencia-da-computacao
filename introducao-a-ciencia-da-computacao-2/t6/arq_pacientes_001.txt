@@ -1,0 +1,13 @@
+0.0
+3
+Valle N N N N N N N N N N N N N N N S S N
+Silva N S N N N S N S N N N N N N S N N N
+Sousa N N N N N N N N N N S N N S S N N N
+15.0
+1
+Costa N N N N N N N N N S N N N N N N N N
+22.5
+2
+Gomes N N N N N N N N N N N N N N N N N S
+Lima N N N N N N N N N N N N N N N N N N
+ 

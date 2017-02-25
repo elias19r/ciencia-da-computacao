@@ -1,0 +1,184 @@
+G = (V_n, V_t, P, <program>)
+
+V_n = {
+    <program>, <instruction>, <pattern>, <action>, <statement>,
+    <command>, <if>, <while>, <do-while>, <for>, <for-in>,
+    <delete>, <exit>, <return>, <print>, <getline>, <expr-list>,
+    <variable>, <id>, <index>, <lvalue>, <expr>  , <expr01>,
+    <expr02>, <expr03>, <expr04>, <expr05>, <expr06>, <expr07>,
+    <expr08>, <expr09>, <expr10>, <expr11>, <expr12>, <expr13>,
+    <expr14>, <assignment>, <comparison>, <arithmetic>, <unary>,
+    <unary-op>, <constant>, <integer>, <float>, <string>,
+    <sentence>, <char>, <alpha-numeric>, <number>, <digit>,
+    <letter>, <lowercase>, <uppercase>, <symbol>, <sign>,
+    <endline>
+}
+
+V_t = {
+     , !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, 0, 1,
+    2, 3, 4, 5, 6, 7, 8, 9, :, ;, <, =, >, ?, @, A, B, C, D, E,
+    F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y,
+    Z, [, \, ], ^, _, `, a, b, c, d, e, f, g, h, i, j, k, l, m,
+    n, o, p, q, r, s, t, u, v, w, x, y, z, {, |, }, ~,
+    BEGIN, END, if, else, do, while, for, in, delete,
+    break, continue, next, exit, return, print, getline,
+    ARGC, ARGIND, ARGV, BINMODE, CONVFMT, ENVIRON, ERRNO,
+    FIELDWIDTHS, FILENAME, FNR, FS, IGNORECASE, LINT, NF,
+    NR, OFMT, OFS, ORS, PROCINFO, RS, RT, RSTART,
+    RLENGTH, SUBSEP, TEXTDOMAIN
+}
+
+P = {
+
+01.    <program> ::= <instruction> <program>
+                   | <instruction>
+
+02.    <instruction> ::= <pattern> { <action> }
+                       | { <action> }
+
+03.    <pattern> ::= BEGIN
+                   | END
+                   | <expr>
+
+04.    <action> ::= <statement> <action>
+                  | <statement> 
+
+05.    <statement> ::= { <statement> }
+                     | <expr> <statement> 
+                     | <command> <statement>
+                     | <expr>
+                     | <command>
+
+06.    <command> ::= <if>
+                   | <while>
+                   | <do-while> <endline>
+                   | <for>
+                   | <for-in>
+                   | <delete> <endline>
+                   | break <endline>
+                   | continue <endline>
+                   | next <endline>
+                   | <exit> <endline>
+                   | <return> <endline> 
+                   | <print> <endline>
+                   | <getline> <endline>
+
+07.    <if> ::= if ( <expr> ) <statement>
+              | if ( <expr> ) <statement> else <statement>
+
+08.    <while> ::= while ( <expr> ) <endline>
+                 | while ( <expr> ) <statement>
+
+09.    <do-while> ::= do <statement> while ( <expr> )
+
+10.    <for> ::= for (  ;  ; ) <statement>
+              | for ( <expr> ;  ;  ) <statement>
+              | for (  ; <expr> ;  ) <statement>
+              | for (  ;  ; <expr> ) <statement>
+              | for ( <expr> ; <expr> ;  ) <statement>
+              | for ( <expr> ;  ; <expr> ) <statement>
+              | for (  ; <expr> ; <expr> ) <statement>
+              | for ( <expr> ; <expr> ; <expr> ) <statement>
+
+11.    <for-in> ::= for ( <variable> in <id> ) <statement>
+
+12.    <delete> ::= delete <id> [ <index> ]
+
+13.    <exit> ::= exit | exit <expr>
+
+14.    <return> ::= return | return <expr>
+
+15.    <print> ::= print <expr-list>
+                 | print
+
+16.    <getline> ::= getline <variable>
+                   | getline
+
+17.    <expr-list> ::= <expr> , <expr-list>
+                     | <command> , <expr-list>
+                     | <variable> , <expr-list>
+                     | <constant> , <expr-list>
+                     | <expr>
+                     | <command>
+                     | <variable>
+                     | <constant>
+
+18.    <variable> ::= <id>
+                    | $<expr>
+                    | ARGC | ARGIND | ARGV | BINMODE | CONVFMT
+                    | ENVIRON | ERRNO | FIELDWIDTHS | FILENAME
+                    | FNR | FS | IGNORECASE | LINT | NF | NR
+                    | OFMT | OFS | ORS | PROCINFO | RS| RT
+                    | RSTART | RLENGTH | SUBSEP | TEXTDOMAIN
+
+19.    <id> ::= _ <id>
+              | <letter> <id>
+              | _
+              | <alpha-numeric> 
+
+20.    <index> ::= <number> | <string>
+
+21.    <lvalue> ::= <variable>
+                  | <variable> [ <index> ]
+
+22.    <expr>   ::= <lvalue> <assignment> <expr01> | <expr01>
+23.    <expr01> ::= <expr02> ? <expr01> : <expr01> | <expr02>
+24.    <expr02> ::= <expr03> || <expr02>           | <expr03>
+25.    <expr03> ::= <expr04> && <expr03>           | <expr04>
+26.    <expr04> ::= ( <index> ) in <id>            | <expr05>
+27.    <expr05> ::= <expr06> in <id>               | <expr06>
+28.    <expr06> ::= <expr07> <comparison> <expr06> | <expr07>
+29.    <expr07> ::= <expr08> <expr07>              | <expr08>
+30.    <expr08> ::= <expr09> <arithmetic> <expr08> | <expr09>
+31.    <expr09> ::= <unary> <expr10>               | <expr10>
+32.    <expr10> ::= <expr11> ^ <expr10>            | <expr11>
+33.    <expr11> ::= <lvalue> <unary-op>            | <expr12>
+34.    <expr12> ::= <unary-op> <lvalue>            | <expr13>
+35.    <expr13> ::= ( <expr> )                     | <expr14>
+36.    <expr14> ::= <variable> | <constant>
+
+37.    <assignment> ::=   = | -= | += | /= | *= | %= | ^= 
+38.    <comparison> ::=  >= | >  | == | != | <= | < 
+39.    <arithmetic> ::=   - | +  | %  |  / | *
+40.         <unary> ::=   - | +  | !
+41.      <unary-op> ::=  -- | ++
+
+42.    <constant> ::= <integer> | <float> | <string>
+43.    <integer> ::= <number> | <sign> <number>
+
+44.    <float> ::= <sign> <number> . <number>
+                 | <number> . <number>
+
+45.    <string> ::= " <sentence> "
+
+46.    <sentence> ::= <char> <sentence>
+                    | <char>
+
+47.    <char> ::= <alpha-numeric> | <symbol>
+
+48.    <alpha-numeric> ::= <letter> <alpha-numeric>
+                         | <digit>  <alpha-numeric>
+                         | <letter>
+                         | <digit>
+
+49.    <number> ::= <digit> <number>
+                  | <digit>
+
+50.    <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+51.    <letter> ::= <lowercase> | <uppercase>
+
+52.    <lowercase> ::= a | b | c | d | e | f | g | h | i | j
+                     | k | l | m | n | o | p | q | r | s | t
+                     | u | v | w | x | y | z
+
+53.    <uppercase> ::= A | B | C | D | E | F | G | H | I | J
+                     | K | L | M | N | O | P | Q | R | S | T
+                     | U | V | W | X | Y | Z
+
+54.    <symbol> ::=   | ! | " | # | $ | % | & | ' | ( | ) | *
+                  | + | , | - | . | / | : | ; | < | = | > | ?
+                  | @ | [ | \ | ] | ^ | _ | ` | { | | | } | ~
+
+55.    <sign> ::= + | -
+56.    <endline> ::= ;
+}

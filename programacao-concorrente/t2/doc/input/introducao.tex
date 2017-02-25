@@ -1,0 +1,26 @@
+\section{Introdução}
+
+\subsection{Hospital em ICMCTown?}
+
+Este trabalho implementa algoritmos para encontrar uma melhor localização para a instalação de um hospital na fictícia cidade de ICMCTown, assim como foi sugerido no enunciado do trabalho 2 da disciplina. A modelagem da cidade é feita em um grafo, em que os vértices representam as junções (esquinas) e as arestas representam as ruas que ligam as junções.
+
+Os algoritmos implementados foram o de Floyd-Warshall \cite{floyd} e o de  Dijkstra \cite{dijkstra}. Além da versão sequencial, também foi implementada uma versão paralela de cada um dos algoritmos utilizando recursos oferecidos pela OpenMP \cite{openmp}.
+
+Este relatório faz parte de um conjunto de arquivos referentes ao trabalho. A documentação do código-fonte encontra-se nos arquivos \texttt{.c} dentro de \texttt{./src} a partir do diretório raiz.
+
+\subsection{Os Algoritmos}
+
+\subsubsection{Floyd-Warshall}
+
+O algoritmo de Floyd-Warshall é uma análise feita em cima de um grafo valorado e direcionado para determinar menores caminhos. Em uma única execução, esse algoritmo encontra o menor caminho entre todos os pares de vértices do grafo. O caminho é determinado somente pelo seu custo -- soma dos pesos de todas as arestas presentes em seu percurso.
+
+Para resolver o problema da instalação de um hospital em ICMCTown, é requerido que a localização seja de modo que a maior distância entre uma casa da cidade e o hospital seja a mínima possível. A execução do Floyd-Warshall resulta na distância de cada esquina da cidade para cada outra esquina, sendo assim, seleciona-se como resultado a distância da esquina que possui a mínima distância entre as maiores dessas distâncias.
+
+\subsubsection{Dijkstra}
+
+O algoritmo de Dijkstra é utilizado em problemas em que se deseja encontrar caminhos mínimos em grafos. 
+
+Como o problema da instalação de um hospital em ICMCTown foi modelado como um grafo, tem-se a melhor localização desse hospital quando a sua distância entre o vértice mais longínquo for a menor possível.
+    
+Dessa forma, o algoritmo de Dijkstra, executado para cada um dos vértices do grafo, encontra a distância de cada junção para todas as outras. Tendo esses dados avaliados, uma solução do problema torna-se imediata selecionando-se como resultado a distância menor entre as maiores dessas distâncias.
+

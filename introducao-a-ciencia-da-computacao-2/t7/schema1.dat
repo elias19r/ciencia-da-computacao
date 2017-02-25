@@ -1,0 +1,4 @@
+create table pessoa (codigo int, nome char[80], idade int, sexo char );
+create table empresa (razaosocial char[255], endereco char[255], numero int, cidade char[80], estado char[2]);
+
+showalltables

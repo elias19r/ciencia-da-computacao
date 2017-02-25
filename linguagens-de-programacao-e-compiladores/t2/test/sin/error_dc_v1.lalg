@@ -1,0 +1,6 @@
+{ Esqueceu variaveis na declaracao }
+program oi;
+var : real;
+begin
+	a := 10;
+end.

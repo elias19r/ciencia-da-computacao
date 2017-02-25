@@ -1,0 +1,4 @@
+All data in this directory were acquired at
+http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/tsp/
+
+Only some TSP EUC_2D cases were used. In order to make the file reading process easy by the program `aco-tsp', the files' headers were removed.

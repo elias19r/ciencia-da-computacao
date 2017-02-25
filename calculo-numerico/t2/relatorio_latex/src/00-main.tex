@@ -1,0 +1,48 @@
+\documentclass[a4paper, twoside, 12pt]{article}
+
+	\usepackage[utf8]{inputenc}
+	\usepackage[brazil]{babel}
+	\usepackage[lmargin=2cm, rmargin=2cm, tmargin=2cm, bmargin=2cm]{geometry}
+	\usepackage{indentfirst}
+	\usepackage{amsmath}
+	\usepackage{amsfonts}
+	\usepackage{listings}
+	\usepackage{color}
+	\usepackage{graphicx}	
+
+	\definecolor{dkgreen}{rgb}{0,0.6,0}
+	\definecolor{gray}{rgb}{0.5,0.5,0.5}
+	\definecolor{mauve}{rgb}{0.58,0,0.82}
+	
+	\lstset{
+		frame=tb,
+		language=C,
+		aboveskip=2mm,
+		belowskip=2mm,
+		showstringspaces=false,
+		columns=flexible,
+		basicstyle={\small\ttfamily},
+		numbers=none,
+		keywordstyle=\color{blue},
+		commentstyle=\color{dkgreen},
+		stringstyle=\color{mauve},
+		breaklines=true,
+		breakatwhitespace=false,
+		tabsize=4
+	}
+
+\begin{document}
+
+	\setlength\parskip{0.3cm}
+
+	\input{./src/01-capa.tex}
+	
+	\setcounter{page}{1}
+	
+	\input{./src/02-introducao.tex}
+	\input{./src/03-desenvolvimento.tex}
+	\input{./src/04-resultados.tex}
+	\input{./src/05-conclusao.tex}
+	\input{./src/06-referencias.tex}
+	
+\end{document}

@@ -1,0 +1,51 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+SCC0217 -- Linguagens de Programacao e Compiladores
+
+Elias Italiano Rodrigues 7987251
+Vinicius Katata Biondo   6783972
+
+----------------------------------------------
+ Trabalho 3 -- Analisador Semantico para LALG
+----------------------------------------------
+
+Este trabalho implementa um analisador semantico com tratamento de erros
+para a linguagem de programacao LALG utilizando as ferramentas flex e bison.
+Foram seguidas as instrucoes dadas em sala de aula assim como consultadas em
+tutoriais na Web, em manual e em livro.
+
+	NOTE: para maiores informacoes, consulte o RELATORIO.pdf neste diretorio.
+
+-------------------------------------------
+ Compilacao
+-------------------------------------------
+
+O trabalho entregue, como requisitado, ja foi previamente compilado (Linux), nao
+havendo necessidade de executar esse passo. Porem, caso queira ou precise
+compilar novamente, basta estar dentro do diretorio do trabalho e executar:
+
+	make
+
+E' necessario ter instalado o compilador gcc, as ferramentas flex e bison,
+assim como o utilitario make em sistema operacional Linux.
+
+-------------------------------------------
+ Execucao
+-------------------------------------------
+
+Para executar o trabalho, basta estar dentro de seu diretorio e executar:
+	./main
+Dessa maneira, o programa LALG sera lido da entrada padrao stdin.
+
+Para executa-lo sobre um arquivo, basta redirecionar a entrada:
+	./main < meu-programa.lalg
+
+No diretorio ./test/sem encontram-se alguns exemplos _semanticos_ de
+programa em LALG para testar. Por exemplo:
+	./main < ./test/sem/programa1.lalg
+
+Opcionalmente, para rodar para todos os programas .lalg de ./test/sem, execute:
+	make run
+As saidas serao escritas em arquivos com sufixo _out na propria pasta ./test/sem
+

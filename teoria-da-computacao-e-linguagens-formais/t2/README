@@ -1,0 +1,37 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+SCC0205 Teoria da Computacao e Linguagens Formais
+Trabalho 2 - Extrator de Informacao
+Tema: Horoscopo
+
+Elias Italiano Rodrigues         7987251
+Gabriel Tessaroli Giancristofaro 4321350
+Paulo Augusto de Godoy Patire    7987060
+
+SOBRE
+=====
+
+Este trabalho implementa um extrator de informacao para textos dentro do
+tema horoscopo. O extrator e' implementado utilizando a ferramenta Flex.
+
+INSTRUCOES DE COMO RODAR
+========================
+
+Para compilar todo o projeto, execute:
+	make
+
+Para rodar o extrator de informacao para uma entrada, execute:
+	./bin/extract < arquivo-de-entrada
+
+Para rodar o extrator de informacao para todas entradas de ./data, execute:
+	./run.sh
+
+
+ARQUIVOS E DIRETORIOS DESTE TRABALHO
+====================================
+	./bin        : codigo compilado e executavel
+	./data       : dados de entrada usados nos testes
+	./doc        : relatorio do trabalho
+	./src        : codigo-fonte do extrator de informacao em Flex
+

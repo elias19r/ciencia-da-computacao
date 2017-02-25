@@ -1,0 +1,92 @@
+\section{Resultados \label{sec:resultados}}
+
+Os programas foram compilados e executados de modo automatizado por \emph{shell scripts}. Para as versões sequencial e paralela MPI, foram usadas as máquinas do cluster Cosmos que apresentam a seguinte configuração:
+
+\begin{verbatim}cosmos.lasdpc.icmc.usp.br
+Hardware:
+Processor: Intel Core 2 Quad Q9400 @ 2.67GHz (4 Cores)
+Motherboard: Gigabyte G41MT-S2P
+Chipset: Intel 4 DRAM + ICH7
+Memory: 8192MB
+Disk: 500GB Western Digital WD5000AACS-0
+Graphics: Intel 4 IGP
+Network: Realtek RTL8111/8168/8411
+
+Software:
+OS: Ubuntu 14.04, Kernel: 3.13.0-36-generic (x86_64)
+\end{verbatim}
+
+Para a versão em CUDA, utilizou-se o cluster Andromeda que possui a seguinte configuração:
+
+\begin{verbatim}andromeda.lasdpc.icmc.usp.br
+*-memory: 31GiB
+*-cpu AMD FX(tm)-8350 Eight-Core Processor 4GHz 64 bits
+*-display GK107 [GeForce GTX 650] NVIDIA Corporation 64 bits
+*-network RTL8111/8168/8411 Gigabit Ethernet Controller 1Gbit/s 64 bits
+\end{verbatim}
+
+Os resultados de tempos a seguir são provenientes de 10 execuções consecutivas dos programas nos clusters citados acima. Foi considerado para os testes a imagem \texttt{big-in.ppm} de dimensões $10720 \times 7120$, pois apresenta um tamanho considerável ($> 70$ Megapixel) e é possível de ser copiada para o \textit{device} na implementação em CUDA sem problemas.
+
+Para a versão MPI, foram escolhidos 19 processos MPI para rodar 1 por máquina nas 19 máquinas disponíveis no momento da execução dos testes no cluster Cosmos. Cada uma das máquinas ficou somente com 1 processo com a intenção de minimizar a quantidade de dados transferidos pela rede, uma vez que pode consideravelmente prejudicar o \textit{speed up}. Os arquivos completos dos resultados aqui apresentados podem ser consultados no diretório \texttt{./test} deste trabalho.
+
+Com o objetivo de fazer uma comparação mais honesta, foi calculado para cada execução somente o tempo gasto com processamento. Assim, usou-se das funções \texttt{gettimeofday()} na versão sequencial e CUDA, e \texttt{MPI\_Wtime()}  na versão paralela com MPI para saber o tempo de execução e não o programa \texttt{/usr/bin/time} como sugerido no enunciado do trabalho. Ignorando a tempo de leitura da entrada e escrita da saída, tem-se os seguintes tempos mostrados nas Tabela~\ref{tab:tempos}, \ref{tab:stats} e \ref{tab:speedup}.
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{|c||c|c|c|} 
+		\hline
+		\textbf{Execução} & \textbf{Sequencial} & \textbf{Paralelo MPI} & \textbf{Paralelo CUDA}\\
+		\hline
+		1  & 22.73 & 5.07 & 0.85 \\
+		2  & 22.74 & 4.82 & 0.83 \\
+		3  & 22.77 & 5.07 & 0.83 \\
+		4  & 29.75 & 5.04 & 0.91 \\
+		5  & 30.28 & 4.92 & 0.83 \\
+		6  & 30.32 & 4.79 & 0.83 \\
+		7  & 30.30 & 5.04 & 0.83 \\
+		8  & 22.76 & 5.04 & 0.84 \\
+		9  & 22.73 & 5.06 & 0.83 \\
+		10 & 30.31 & 5.09 & 0.83 \\
+		\hline
+	\end{tabular}
+	\caption{Tempos (s) de 10 execuções dos programas sequencial, paralelo MPI e CUDA. \label{tab:tempos}}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{|c||c|c|c|} 
+		\hline
+		\textbf{Programa} & \textbf{Média} & \textbf{Desvio padrão} & \textbf{Intervalo de confiança}\\
+		\hline
+		Sequencial    & 26.469000 & 3.726308 & [24.159411, 28.778589] \\
+		Paralelo MPI  & 4.994000  & 0.104326 & [4.929338, 5.058662] \\
+		Paralelo CUDA & 0.841000  & 0.023854 & [0.826215, 0.855785] \\
+		\hline
+	\end{tabular}
+	\caption{Estatísticas dos tempos (s) das execuções sequencial, paralelo MPI e CUDA. \label{tab:stats}}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{|c||c|c|c|} 
+		\hline
+		\textbf{Programa} & \textit{\textbf{Speed up}}\\
+		\hline
+		Sequencial    & --- \\
+		Paralelo MPI  & 5.300160192 \\
+		Paralelo CUDA & 31.473246136 \\
+		\hline
+	\end{tabular}
+	\caption{\textit{Speed up} das execuções sequencial, paralelo MPI e CUDA. \label{tab:speedup}}
+\end{center}
+\end{table}
+
+\newpage
+De acordo com os resultados apresentados, percebe-se que houve um ganho de desempenho nos processamentos paralelos. A versão paralela MPI teve um \textit{speed up} de aproximadamente 5 no processamento dos dados enquanto a versão paralela com CUDA teve \textit{speed up} de 31.
+
+Os resultados do paralelo com MPI são ainda prejudicados por um fator inerente: a transferência de dados pela rede do cluster. Isso tem influência direta no tempo total gasto com processamento e foi um dos motivos de ter sido fixado somente 1 processo MPI por máquina. Com mais testes talvez se possa concluir que mesmo aumentando a quantidade de máquinas e processos, o ganho de \textit{speed up} não cresce proporcionalmente.
+
+Como na versão com CUDA são lançadas uma \textit{thread} para cada pixel, o tempo gasto com o processamento é quase constante em função do tamanho da entrada, pois GPU consegue gerenciar uma grande quantidade de \textit{threads}. Uma vez que a imagem toda e sua cópia com o resultado processado caibam na memória da placa de vídeo (\textit{device}), não é necessário fazer particionamento da imagem. E em comparação com o MPI, o tempo gasto para copiar a imagem inteira para o \textit{device}, e depois o resultado de volta, é muito inferior por se tratar de tranferências entre memórias principais dentro do mesmo computador.
+

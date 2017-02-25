@@ -1,0 +1,117 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+SSC0251 Processamento de Imagens
+Trabalho 1: Draw, Contrast, Flood-fill
+
+Elias Italiano Rodrigues 7987251
+2015-03-17
+
+--------------------------------------------------
+ O TRABALHO
+--------------------------------------------------
+
+------------------------
+ Draw
+------------------------
+    Este trabalho consiste de um programa que desenha uma imagem PGM P2|P5
+    branca com uma circunferencia ou um quadrado preto no centro e opcionalmente
+    um segmento de reta.
+
+------------------------
+ Contrast
+------------------------
+    Este trabalho consiste de um programa que, dada uma imagem PGM P2|P5,
+    realca seu contraste fazendo um alongamento do histograma da imagem.
+
+------------------------
+ Flood-fill
+------------------------
+    Este trabalho consiste de um programa que, dada uma imagem PGM P2|P5
+    e as coordenadas de um pixel da imagem, preenche uma regiao fechada.
+    Vulgo "baldinho do Paint".
+
+--------------------------------------------------
+ COMO COMPILAR OS PROGRAMAS
+--------------------------------------------------
+
+Para compilar todos os programas, execute:
+	make
+
+--------------------------------------------------
+ COMO USAR OS PROGRAMAS
+--------------------------------------------------
+
+Para testar todos os programas de uma vez, execute:
+	make run
+
+------------------------
+ Draw
+------------------------
+Seguem os argumentos opicionais que o programa pode receber:
+    -n, --name <path>             set <path> as the file name for the output
+    -t, --type <P2|P5>            set the PGM type for the image
+    -w, --width <number>          set <number> as the width of the image
+    -h, --height <number>         set <number> as the height of the image
+    -f, --figure <circle|square>  set figure to draw on the image
+    -s, --size   <number>         make the figure considering <number> as radius
+                                  for circle or as side for square
+    -l <x0 y0 xend yend>          set a line to be drawn on the image
+    --fill                        fill the figure
+    --no-output                   do not create the output file
+    --help                        display this help and exit
+    --version                     output version information and exit
+
+Exemplos de como rodar:
+	./bin/draw -n out1.pgm -t P2 -w 300 -h 200 -f circle -s 70 --fill
+	./bin/draw -n out2.pgm -t P5 -w 150 -h 150 -f square -s 40
+	./bin/draw --figure square --size 60 --fill -l 70 20 220 210
+	
+Para conferir por vazamento de memoria, execute:
+	make memcheck_draw
+
+------------------------
+ Contrast
+------------------------
+Seguem os argumentos opicionais que o programa pode receber:
+    -i, --input <path>        set <path> as the input file
+    -o, --output <path>       set <path> as the output file
+    -v, --value <number>      ajust the contrast at <number> factor; it's
+                              0.001 by default
+    --no-output               do not create the output file
+    --help                    display this help and exit
+    --version                 output version information and exit
+	
+Exemplos de como rodar:
+	./bin/contrast -i in.pgm -o out.pgm
+	./bin/contrast -i in2.pgm -o out2.pgm
+
+Para conferir por vazamento de memoria, execute:
+	make memcheck_contrast
+
+------------------------
+ Flood-fill
+------------------------
+Seguem os argumentos opicionais que o programa pode receber:
+    -i, --input <path>        set <path> as the input file
+    -o, --output <path>       set <path> as the output file
+    -x <number>               coordenates of the chosen pixel
+    -y <number>               where x is its columm and y its line
+    -c, --color <number>      the color used to fill the area
+    --no-output               do not create the output file
+    --help                    display this help and exit
+    --version                 output version information and exit
+	
+Exemplos de como rodar:
+	./bin/flood-fill -i in.pgm -o out.pgm -x 62 -y 62
+
+Para conferir por vazamento de memoria, execute:
+	make memcheck_flood-fill
+
+--------------------------------------------------
+ Problemas?
+--------------------------------------------------
+
+Caso nao consiga compilar e rodar os programas, confira por dependencias da
+biblioteca math.h, assim como dos programas usados "make", "gcc" e "valgrind".
+

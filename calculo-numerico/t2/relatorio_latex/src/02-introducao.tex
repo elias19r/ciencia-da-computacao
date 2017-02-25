@@ -1,0 +1,164 @@
+\section{Introdução}
+
+\subsection{Solução Numérica de EDO}
+
+A maioria das Equações Diferenciais Ordinárias (EDO) encontradas na prática na área de engenharia,
+matemática, física, computação etc, não podem ser resolvidas analiticamente: o único recurso é a
+aplicação de um método numérico iterativo para encontrar uma solução aproximada que satisfaça o problema.
+No final dessa seção, veremos a fórmula iterativa do Método de Euler Modificado que foi usada para
+programar o problema que descrito no enunciado do trabalho.
+
+\subsection{Transformação de um PVI de Ordem $m > 1$ em um Sistema de EDO de 1ª Ordem}
+
+Muitas vezes, para resolver um Problema de Valor Inicial (PVI) de ordem maior que um,
+precisamos transformá-lo em um sistema de EDO de 1ª Ordem e então aplicar um método
+numérico conhecido para obter a solução.
+
+Um PVI de ordem $m > 1$, tem a seguinte forma geral:
+\[
+	\left \{
+		\begin{array}{lllll}
+			y^{(m)}(x)   & = & f(x, y(x), y'(x), \dots, y^{(m-1)}(x)) \\
+			y(a)         & = & y_{a} \\
+			y'(a)        & = & y'_{a} \\
+			\vdots      & = & \vdots \\
+			y^{(m-1)}(a) & = & y^{(m-1)}_{a} \\
+		\end{array}
+	\right .
+\]
+
+Esse PVI pode ser transformado em um sistema de equações de 1ª ordem com as
+seguintes $m$-equações fazendo a transformação:
+\[
+	\left \{
+		\begin{array}{lllll}
+			y_{1}(x) & = & y(x) \\
+			y_{2}(x) & = & y'(x) \\
+			\vdots  & = & \vdots \\
+			y_{m}(x) & = & y^{(m-1)}(x) \\
+		\end{array}
+	\right .
+\]
+
+E então, derivando os dois dados, vem:
+\[
+	\left \{
+		\begin{array}{lllll}
+			y'_{1}(x) & = & y_{2}(x) & , & y_{1}(a) = y_{a} \\
+			y'_{2}(x) & = & y_{3}(x) & , & y_{2}(a) = y'_{a} \\
+			\vdots   & = & \vdots  & , & \vdots \\
+			y'_{m}(x) & = & f(x, y_{1}(x), y_{2}(x), \dots, y_{m}(x)) & , & y_{m}(a) = y^{(m-1)}_a \\
+		\end{array}
+	\right .
+\]
+
+Escrevendo esse sistema na forma vetorial, temos:
+\[
+	\left \{
+		\begin{array}{lll}
+			\mathbf{y}'   & = & \mathbf{F}(x, \mathbf{y}) \text{ , } a \leq x \leq b \\
+			\mathbf{y}(a) & = & \mathbf{y}_{a}
+		\end{array}
+	\right .
+\]
+
+onde,
+\[
+	\mathbf{y} = 
+	\begin{bmatrix}
+		y_1(x) \\
+		y_2(x) \\
+		\vdots \\
+		y_m(x) 
+	\end{bmatrix}
+	\text{ , }
+	\mathbf{y}' =
+	\begin{bmatrix}
+		y'_1(x) \\
+		y'_2(x) \\
+		\vdots \\
+		y'_m(x) 
+	\end{bmatrix}
+	\text{ , }
+	\mathbf{F}(x, \mathbf{y}) =
+	\begin{bmatrix}
+		y_2(x) \\
+		y_3(x) \\
+		\vdots \\
+		f(x, y_{1}(x), y_{2}(x), \dots, y_{m}(x))
+	\end{bmatrix}
+	\text{ e }
+	\mathbf{y}_a =
+	\begin{bmatrix}
+		y_a \\
+		y'_a \\
+		\vdots \\
+		y^{(m-1)}_a
+	\end{bmatrix}
+\]
+
+\subsection{O Método de Euler Modificado}
+
+Dado um PVI da forma
+\[
+	\left \{
+		\begin{array}{lll}
+			y'   & = & f(x, y) , \text{  } a \leq x \leq b \\
+			y(a) & = & a
+		\end{array}
+	\right .
+\]
+
+No Método de Euler Modificado, divide-se o intervalo $[a,b]$ do PVI em intervalos $h$ de modo que $h = (b - a) / N$
+e define-se os pontos $x_j = a + j \cdot h$, para $j = 0, 1, 2, \dots, N$
+
+E então, a solução é encontrada a partir da iteração da seguinte fórmula:
+\[
+	y_{j+1} = y_j + \frac{h}{2} \Big[f(x_j, y_j) + f(x_{j+1}, \overline{y}_{j+1})\Big]
+\]
+
+onde $x_{j+1} = x_j + h$ e $\overline{y}_{j+1} = y_j + h \cdot f(x_j, y_j)$
+
+Um algoritmo para execução desse método consiste na aplicação dos seguintes passos:
+\begin{enumerate}
+	\item Calcular $f(x_{j}, y_{j})$
+	\item Calcular $\overline{y}_{j+1}$
+	\item Calcular $f(x_{j+1}, \overline{y}_{j+1})$
+	\item Calcular $y_{j+1}$
+\end{enumerate}
+
+De maneira análoga, o Método de Euler Modificado pode ser aplicado a um sistema de EDO de 1ª ordem
+escrito na forma vetorial como visto no tópico anterior. Logo, dado um PVI de ordem maior que um, pode-se
+transformá-lo em um sistema de EDO de 1ª ordem, escrevê-lo na forma vetorial e aplicar este método iterativo
+para se obter a solução.
+
+\subsection{O Trabalho}
+
+Este trabalho consiste em implementar um programa de computador que execute o Método de Euler Modificado
+para a resolução do seguinte PVI de ordem 2: 
+\[
+	\left \{
+		\begin{array}{llll}
+			y''   & = & y + e^{x} \text{ , } x \in [0, 2] \\
+			y(0)  & = & 1 \\
+			y'(0) & = & 0 \\
+		\end{array}
+	\right .
+\]
+
+\newpage
+
+Que tem a solução analítica conhecida e dada pelo enunciado:
+\[
+	y(x) = \frac{1}{4} \Big[ e^{x}(1 + 2x) + 3e^{-x} \Big]
+\]
+
+O programa é iterado para os valores de $h_k = 0.2/(2^k)$, $k = 1, 2, 3, 4$ de modo que se observe
+a convergência do método de Euler Modificado quando $h \rightarrow 0$.
+
+Além disso, para cada $k$ é calculada a ordem de convergência com $n_k = \log_2(E_{h_k} / E_{h_{k+1}})$, $k = 1, 2, 3$
+onde $E_{h_k}$ é o erro relativo dado por
+$E_{h_k} = \frac{ \sqrt{\sum_{i=1}^{N_k} \big[ y(x_i) - y_i^{h_k} \big]^2} }{ \sqrt{\sum_{i=1}^{N_k} y(x_i)^2} }$, 
+em que $N_k$ é o número de pontos na malha $h_k$ e $y_i^{h_k}$ representa a solução obtida pelo Método de
+Euler Modificado com $h = h_k$.
+

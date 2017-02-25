@@ -1,0 +1,35 @@
+
+Tablename: pessoa
+	Field: codigo Type: int Size 4
+	Field: nome Type: char Size 80
+	Field: idade Type: int Size 4
+	Field: sexo Type: char Size 1
+
+
+Tablename: empresa
+	Field: razaosocial Type: char Size 255
+	Field: endereco Type: char Size 255
+	Field: numero Type: int Size 4
+	Field: cidade Type: char Size 80
+	Field: estado Type: char Size 2
+
+#Tables: 2
+#Indexes: 4
+#Inserts: 6
+#Selects: 0
+#Sorts: 0
+#ShowAllTables: 1
+#ShowAllIndexes: 0
+#Records in last select (binary search): 0
+#Records in last select (sequential search): 0
+2, 'paula souza', 11, 'F'
+2, 'joaquim jose', 123, 'M'
+#Tables: 2
+#Indexes: 4
+#Inserts: 10
+#Selects: 1
+#Sorts: 0
+#ShowAllTables: 1
+#ShowAllIndexes: 0
+#Records in last select (binary search): 1
+#Records in last select (sequential search): 1

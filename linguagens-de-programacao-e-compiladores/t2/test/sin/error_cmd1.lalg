@@ -1,0 +1,18 @@
+{ Esqueceu dois erros nos comandos read e write }
+program oi;
+
+	const c = 10;
+	var a, b: integer;
+
+begin
+	read a);
+
+	if a = c then
+		write a);
+
+	read();
+
+	if b = c then
+		write();
+
+end.

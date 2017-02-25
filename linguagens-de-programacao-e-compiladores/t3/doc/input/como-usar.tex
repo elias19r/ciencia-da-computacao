@@ -1,0 +1,161 @@
+\section{Como Usar \label{sec:como-usar}}
+
+\subsection{Compilação}
+
+O trabalho entregue, como requisitado, já foi previamente compilado (\texttt{Linux}), não havendo necessidade de executar esse passo. Porém, caso queira ou precise compilar novamente, basta estar dentro do diretório do trabalho e executar:
+
+	\indent\indent\texttt{make}
+
+É necessário ter instalado o compilador \texttt{gcc}, as ferramentas \texttt{flex} e \texttt{bison}, assim como o utilitário \texttt{make} em sistema operacional \texttt{Linux}.
+
+\subsection{Execução}
+
+Para executar o trabalho, basta estar dentro de seu diretório e executar:
+
+	\indent\indent\texttt{./main}
+
+Dessa maneira, o programa \texttt{LALG} será lido da entrada padrão \texttt{stdin}.
+
+Para executá-lo sobre um arquivo, basta redirecionar a entrada:
+
+	\indent\indent\texttt{./main < meu-programa.lalg}
+
+No diretório \texttt{./test/sem} encontram-se alguns exemplos \textbf{semânticos} de programa em \texttt{LALG} para testar. Por exemplo:
+
+	\indent\indent\texttt{./main < ./test/sem/programa1.lalg}
+
+Opcionalmente, para rodar para todos os programas \texttt{.lalg} de \texttt{./test/sem}, execute:
+
+	\indent\indent\texttt{make run}
+
+As saídas serão escritas em arquivos com sufixo \texttt{\char`_out} na própria pasta \texttt{./test/sem}.
+
+\newpage
+\subsection{Exemplo de Execução}
+
+Arquivo \texttt{./test/sem/error\char`_varios1.lalg} -- programa fictício com vários erros semânticos:
+\begin{verbatim}
+ 1. program test1;
+ 2. 
+ 3.     { OK: declaracao de constantes }
+ 4.     const a = 10;
+ 5.     const b = 11;
+ 6.     const k = 238.11;
+ 7.     
+ 8.     { ERRO: constante ja declarada }
+ 9.     const a = 74.2;
+10.     
+11.     { OK: declaracao de variaveis}
+12.     var x, y: real;
+13.     var c, i, j: integer;
+14.     var opcao1, opcao2: char;
+15.     
+16.     { ERRO: variavel ja declarada }
+17.     var x: integer;
+18. 
+19.     { OK: declaracao de procedimento }
+20.     procedure my_proc(x: integer; y, z: real);
+21.         { OK: declaracao de variaveis }
+22.         var i, j: integer;
+23.     begin
+24.         j := 7;
+25.         for i:=1 to 5 do
+26.         begin
+27.             { ERRO: variavel 'c' nao declarada neste escopo }
+28.             c := 5 * i + j * x + y + z;
+29.         end;
+30. 
+31.     end;
+32.     
+33.     { ERRO: procedimento ja foi declarado }
+34.     procedure my_proc(x: integer; y, z: real);
+35.     begin
+36.     end;
+37.     
+38. begin
+39.     { OK: divisao entre inteiros }
+40.     c := 439 / 2;
+41. 
+42.     { ERRO: tipo incompativel real <- integer }
+43.     x := a;
+44.     x := 25;
+45. 
+46. 
+47.     { ERROS: divisao entre nao-inteiros (mas faz atribuicao) }
+48.     y := 439.1 / 2;
+49.     y := 500.0 / 2.0;
+50.     
+51.     { OK: atribuicoes sem problemas }
+52.     opcao1 := 'A';
+53.     opcao2 := '\n';
+54.     c := a + b - 10;
+55.     x := k * 2.0;
+56.     x := y;
+57.     x := 12.57 * 6.3;
+58. 
+59.     { ERRO: tipo incompativel integer <- real }
+60.     c := x;
+61.     c := 9.21;
+62.     
+63.     { OK: comandos sem problemas }
+64.     read(x, y);
+65.     write(x, y);
+66. 
+67.     { OK: atribuicoes sem problemas }   
+68.     c := 9;
+69.     i := c + a + b;
+70.     j := i * 2;
+71.     
+72.     { ERRO: variavel nao declarada }
+73.     t := x;
+74.     
+75.     { OK: chamada sem problemas }
+76.     my_proc(c; x; y);
+77.     
+78.     my_proc;       { ERRO: argumentos insuficientes }
+79.     my_proc(c);    { ERRO: argumentos insuficientes }
+80.     my_proc(x);    { ERRO: argumentos insuficientes }
+81.     my_proc(c; y); { ERRO: argumentos insuficientes }
+82.     my_proc(c; x; y; j); { ERRO: argumentos demais }
+83.     my_proc(x; y; j);    { ERRO: tipos incompativies }
+84.     
+85.     { ERRO: procedimento nao declarado }
+86.     other_proc(x; y);
+87.     
+88.     { ERROS: comandos com variaveis de tipos diferentes }
+89.     read(x, c);
+90.     write(x, c);
+91. end.\end{verbatim}
+
+\newpage
+Comando:
+
+	\indent\indent\texttt{./main < ./test/sem/error\char`_varios1.lalg}
+
+Saída:
+\begin{verbatim}[ 9,19]: constant 'a' has already been declared
+[17,19]: variable 'x' has already been declared
+[28,39]: undeclared variable 'c'
+[36,8 ]: procedure 'my_proc' has already been declared
+[43,11]: incompatible type for variable 'x'
+[44,12]: incompatible type for variable 'x'
+[48,19]: division with non-integer numerator
+[49,18]: division with non-integer denominator
+[49,21]: division with non-integer numerator
+[60,11]: incompatible type for variable 'c'
+[61,14]: incompatible type for variable 'c'
+[73,11]: undeclared variable 't'
+[78,12]: insufficient number of arguments for procedure 'my_proc'
+[79,14]: insufficient number of arguments for procedure 'my_proc'
+[80,14]: insufficient number of arguments for procedure 'my_proc'
+[81,17]: insufficient number of arguments for procedure 'my_proc'
+[82,23]: too much arguments for procedure 'my_proc'
+[83,20]: incompatible type in argument 1 for 'my_proc' procedure
+[83,20]: incompatible type in argument 3 for 'my_proc' procedure
+[86,20]: undeclared procedure 'other_proc'
+[89,14]: read/write command with different variable types
+[90,15]: read/write command with different variable types\end{verbatim}
+
+Onde \texttt{[i,j]} indica linha \texttt{i} na coluna {\texttt{j}}.
+
+Mais exemplos estão disponíves no diretório \texttt{./test/sem}.

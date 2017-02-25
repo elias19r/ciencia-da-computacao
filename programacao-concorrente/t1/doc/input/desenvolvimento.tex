@@ -1,0 +1,209 @@
+\section{Desenvolvimento}
+
+Os programas foram desenvolvidos em linguagem \texttt{C} em sistema operacional \texttt{GNU/Linux}. Além das bibliotecas convencionais \texttt{stdlib.h} e \texttt{stdio.h}, foi utilizada também a \texttt{gmp.h} \cite{gmp} para usar tipos de dados numéricos com precisão arbitrária. A implementação de \emph{threads} foi feita com a biblioteca \texttt{pthread.h} seguindo o modelo visto em sala de aula.
+
+O tipo de dado usado para representar os números reais foi \texttt{mpf\char`_t} que é próprio da biblioteca \texttt{gmp.h}, assim como as respectivas funções para manipulá-lo. De modo geral, optou-se por economizar na quantidade de variáveis e na quantidade de operações dentro dos laços.
+
+\subsection{Gauss-Legendre -- Sequencial}
+
+A implementação sequencial de Gauss-Legendre foi feita de modo direito, ``traduzindo-se" o algoritmo da linguagem matemática para a linguagem \texttt{C} como pode ser conferido nas Listagens~\ref{lst:gss-1} e \ref{lst:gss-2} referentes às Equações~\ref{eq:gs-1}, \ref{eq:gs-2}, \ref{eq:gs-3}, \ref{eq:gs-4} e \ref{eq:gs-5}.
+
+\begin{lstlisting}[caption={Gauss-Legendre -- Sequencial: trecho com variáveis.},label={lst:gss-1}]
+	mpf_t a0;  // a_{n}
+	mpf_t a1;  // a_{n+1}
+	mpf_t b;   // b_{n} e b_{n+1}
+	mpf_t t;   // t_{n} e t_{n+1}
+	mpf_t p;   // p_{n} e p_{n+1}
+	mpf_t tmp; // auxiliar
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Gauss-Legendre -- Sequencial: trecho com equações.},label={lst:gss-2}]
+	// Iteracao do algoritmo
+	for (i = N; i > 0; i--) {
+		// Primeira equacao
+		mpf_add(a1, a0, b);
+		mpf_div_ui(a1, a1, 2);
+		// Segunda equacao
+		mpf_mul(b, a0, b);
+		mpf_sqrt(b, b);
+		// Terceira equacao
+		mpf_sub(tmp, a0, a1);
+		mpf_pow_ui(tmp, tmp, 2);
+		mpf_mul(tmp, tmp, p);
+		mpf_sub(t, t, tmp);
+		// Quarta equacao
+		mpf_mul_ui(p, p, 2);
+
+		mpf_set(a0, a1);
+	}
+	// Resultado (quinta equacao)
+	mpf_add(tmp, a1, b);
+	mpf_pow_ui(tmp, tmp, 2);
+	mpf_div_ui(tmp, tmp, 4);
+	mpf_div(tmp, tmp, t);
+\end{lstlisting}
+
+\subsection{Gauss-Legendre -- Paralelo}
+
+A implementação paralela do algoritmo consiste em identificar operações artiméticas que possam ser realizadas independentes, alocá-las em tarefas $T_i$ e então atribuí-las em processos $P_i$ que representam \emph{threads}. Para isso, as equações referentes ao algoritmo foram analisadas e criou-se o seguinte \textbf{grafo de dependêcia de tarefas} da Figura~\ref{fig:gl-grafo}. Importante observar que foram abertos os quadrados para se obter maior quantidade de termos independentes, por exemplo: $(a_n - a_{n+1})^2 =  a^2_n - 2 a_n a_{n+1} + a^2_{n+1}$.
+
+O código-fonte foi escrito segundo esse grafo, obtendo-se \textbf{grau de concorrência 5}. Confira a listagem completa do código do programa no arquivo \texttt{./src/gauss-legendre\char`_pthread.c}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=1.8,auto]
+	\node[punkt,label={$P_1$},label=left:$T_1$] (1)  at (2,0)  {$a_{n+1} = \frac{a_n + b_n}{2}$};
+	\node[punkt,label={$P_2$},label=left:$T_2$] (2)  at (4.5, 0) {$p_{n+1} = 2 p_n$};
+	\node[punkt,label={$P_3$},label=left:$T_3$] (3)  at (7,0)  {$b_{n+1} = \sqrt{a_n b_n}$};
+	\node[punkt,label={$P_4$},label=left:$T_4$] (4)  at (0,0)  {$t_n - p_n a_n^2$};
+	\node[punkt,label={[xshift=1em]$P_5$},label=left:$T_5$] (5)  at (5.5,-1.2) {$p_n 2 a_n$};
+	\node[punkt,label={[xshift=1em]$P_1$},label=left:$T_6$] (6)  at (2,-1.2) {$p_n a^2_{n+1} $};
+	\node[punkt,label={$P_5$},label=left:$T_7$] (7)  at (3.6,-2) {$p_n 2 a_n a_{n+1}$};
+	\node[punkt,label={[xshift=1em]$P_1$},label=left:$T_8$] (8)  at (0,-3) {$ t_n - p_n a^2_n + p_n 2 a_n a_{n+1} - p_n a^2_{n+1} $};
+	\node[punkt,label={$P_1$},label=left:$T_9$] (9)  at (0,-4.7) {$a^2_{n+1}$};
+	\node[punkt,label={$P_2$},label=left:$T_{10}$] (10) at (2,-4.7) {$2 a_{n+1} b_{n+1}$};
+	\node[punkt,label={[xshift=1em]$P_3$},label=left:$T_{11}$] (11) at (4,-4.7) {$b^2_{n+1}$};
+	\node[punkt,label={$P_4$},label=left:$T_{12}$] (12) at (6,-4.7) {$4 t_{n+1}$};
+	\node[punkt,label={$P_1$},label=left:$T_{13}$] (13) at (3,-6) {$\frac{a^2_{n+1} + 2 a_{n+1} b_{n+1} + b^2_{n+1}}{4 t_{n+1}}$};
+
+	\draw [dashed] (0,-3.8) -- (6,-3.8);
+
+	\draw[->] (1)  edge[pil] (6);
+	\draw[->] (1)  edge[pil] (7);
+
+	\draw[->] (5)  edge[pil] (7);
+
+	\draw[->] (4)  edge[pil] (8);
+	\draw[->] (6)  edge[pil] (8);
+	\draw[->] (7)  edge[pil] (8);
+
+	\draw[->] (9)  edge[pil] (13);
+	\draw[->] (10) edge[pil] (13);
+	\draw[->] (11) edge[pil] (13);
+	\draw[->] (12) edge[pil] (13);
+\end{tikzpicture}
+\caption{Grafo de dependência de tarefas para o algoritmo de Gauss-Legendre. \label{fig:gl-grafo}}
+\end{figure}
+
+\newpage
+\subsection{Borwein (1984) -- Sequencial}
+
+A implementação sequencial de Borwein (1984) também foi feita de modo direito, ``traduzindo-se" as Equações~\ref{eq:b-1}, \ref{eq:b-2}, \ref{eq:b-3} e \ref{eq:b-4} da linguagem matemática para a linguagem \texttt{C}. As variáveis foram definidas de modo análogo à implementação de Guass-Legendre e também foi possível traduzir diretamente as equações para o programa.
+
+\subsection{Borwein (1984) -- Paralelo}
+
+Assim como a implementação paralela do algoritmo de Guass-Legendre, para este algoritmo de Borwein (1984) também foram identificadas as operações artiméticas que podem ser realizadas independentemente. Pode-se conferir o \textbf{grafo de dependêcia de tarefas} da Figura~\ref{fig:b-grafo}.
+
+O código-fonte foi escrito segundo esse grafo, obtendo-se \textbf{grau de concorrência 4}. Confira a listagem completa do código do programa no arquivo \texttt{./src/borwein\char`_pthread.c}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=1.8,auto]
+	\node[punkt,label={$P_3$},label=left:$T_1$] (4)  at (0,0)  {$a_n + b_n$};
+	\node[punkt,label={$P_2$},label=left:$T_2$] (1)  at (3, 0) {$1 + b_n$};
+	\node[punkt,label={$P_1$},label=left:$T_3$] (2)  at (5,0)  {$\sqrt{a_n}$};
+	\node[punkt,label={$P_4$},label=left:$T_4$] (3)  at (7,0)  {$a_n + 1$};
+	\node[punkt,label={[xshift=1em]$P_1$},label=left:$T_5$] (5)  at (5,-1.2) {$2 \cdot \sqrt{a_n}$};
+	\node[punkt,label={[xshift=1em]$P_2$},label=left:$T_6$] (6)  at (3,-1.2) {$(1 + b_n) \cdot \sqrt{a_n}$};
+	\node[punkt,label={[xshift=1em]$P_1$},label=left:$T_7$] (7)  at (7,-2) {$a_{n+1} = \frac{a_n + 1}{2 \cdot \sqrt{a_n}}$};
+	\node[punkt,label={[xshift=1em]$P_2$},label=left:$T_8$] (8)  at (0,-2) {$b_{n+1} = \frac{(1 + b_n) \cdot \sqrt{a_n}}{a_n + b_n}$};
+	\node[punkt,label={$P_2$},label=left:$T_9$] (9)  at (2,-3) {$p_n \cdot b_{n+1}$};
+	\node[punkt,label={$P_1$},label=left:$T_{10}$] (10) at (5,-3) {$1 + a_{n+1}$};
+	\node[punkt,label={[xshift=1em]$P_3$},label=left:$T_{11}$] (11) at (0,-3.5) {$1 + b_{n+1}$};
+	\node[punkt,label={$P_1$},label=left:$T_{12}$] (12) at (3,-4) {$(1 + a_{n+1}) \cdot p_n \cdot b_{n+1}$};
+	\node[punkt,label={$P_1$},label=left:$T_{13}$] (13) at (1,-5) {$p_{n+1} = \frac{(1 + a_{n+1}) \cdot p_n \cdot b_{n+1}}{1 + b_{n+1}}$};
+
+	\draw[->] (2)  edge[pil] (5);
+	\draw[->] (1)  edge[pil] (6);
+	\draw[->] (2)  edge[pil] (6);
+	\draw[->] (5)  edge[pil] (7);
+	\draw[->] (3)  edge[pil] (7);
+	\draw[->] (4)  edge[pil] (8);
+	\draw[->] (6)  edge[pil] (8);
+	\draw[->] (8)  edge[pil] (9);
+	\draw[->] (7)  edge[pil] (10);
+	\draw[->] (8)  edge[pil] (11);
+	\draw[->] (10) edge[pil] (12);
+	\draw[->] (9)  edge[pil] (12);
+	\draw[->] (11) edge[pil] (13);
+	\draw[->] (12) edge[pil] (13);
+\end{tikzpicture}
+\caption{Grafo de dependência de tarefas para o algoritmo de Borwein (1984). \label{fig:b-grafo}}
+\end{figure}
+
+\newpage
+\subsection{Método de Monte Carlo -- Sequencial}
+
+A implementação deste método utilizou o código para geração de números aleatórios dado na especificação do trabalho. Não houve necessidade de usar \textit{big numbers} uma vez que o algoritmo dificilmente converge para uma precisão $d = 6$ do número $\pi$ mesmo com $N = 10^9$ iterações. A forma sequencial é feita de maneira direita em uma iteração, da seguinte forma:
+
+\begin{lstlisting}[caption={Método Monte Carlo para $\pi$ -- Sequencial: trecho de código},label={lst:mc-1}]
+	// Iteracao do algoritmo
+	for (i = N; i > 0; i--) {
+		randomx = boxMullerRandom(&random);
+		randomy = boxMullerRandom(&random);
+		if ((randomx*randomx + randomy*randomx) <= 1.0) {
+			circleArea++;
+		}
+	}
+	// Resultado
+	printf("%.8lf\n", 4.0 * ((double)circleArea / (double)N));
+\end{lstlisting}
+
+
+\subsection{Método de Monte Carlo -- Paralelo}
+
+Como na iteração do algoritmo não há dependência entre os dados, podemos paralelizar essa iteração atribuindo um quantidade $n = N / nthreads$, onde $nthreads$ é quantidade de \textit{threads} desejada. Tendo feito os ajustes para a alocação das \textit{threads}, o programa para esta versão paralela fica da seguinte forma:
+
+\begin{lstlisting}[caption={Método Monte Carlo para $\pi$ -- Paralelo: trecho de código},label={lst:mc-2}]
+	// Calcula quantidade de iteracao por thread
+	n = N / nthreads;
+...
+	// Iteracao do algoritmo em todas as threads
+	for (i = 0; i < nthreads; i++) {
+		indices[i] = i;
+		sums[i] = 0;
+		pthread_create(&threads[i], NULL, func, &indices[i]);
+	}
+
+	// Espera todas threads terminarem e soma os valores
+	for (i = 0; i < nthreads; i++) {
+		pthread_join(threads[i], NULL);
+		circleArea += sums[i];
+	}
+...
+	// Resultado
+	printf("%.8lf\n", 4.0 * ((double)circleArea / (double)N));
+\end{lstlisting}
+
+\subsection{Black-Scholes -- Sequencial}
+
+Assim como o Método Monte Carlo para o cálculo do $\pi$, para este algoritmo de Black-Scholes também foi utilizado o código para geração de números aleatórios dado na especificação do trabalho. O algoritmo consiste na leitura de entradas, um laço e o cálculo dos valores necessários para retornar o intervalo de confiança. Tal implementação para linguagem \texttt{C} ``traduz" diretamente do Algoritmo~\ref{alg:bs}.
+
+\subsection{Black-Scholes -- Paralelo}
+
+Como também não há dependência entre os dados nesse algoritmo, podemos paralelizar essa iteração atribuindo um quantidade $m = M / nthreads$, onde $nthreads$ é quantidade de \textit{threads} desejada. Tendo feito os ajustes para a alocação das \textit{threads}, a ideia do programa para a versão paralela fica análogo ao programa paralelo de Monte Carlo para $\pi$.
+
+\subsection{Compilação e Execução dos Programas}
+
+Estando no diretório raiz dos arquivos deste trabalho, é possível compilar e executar os programas seguindo as instruções:
+
+\begin{itemize}
+	\item Para compilar os programas, execute o comando: \\
+		\verb|make|
+
+	\item Para rodar um dos programas calculando o tempo de execução e redirecionando
+	a entrada e a saída para os arquivos \texttt{entrada\char`_pi.txt} e \texttt{saida\char`_pi.txt},
+	execute o comando: \\
+		\verb|make run EXE=nome-do-programa|
+
+	\item Para rodar Black-Scholes com entrada e saída de \texttt{entrada\char`_blackscholes.txt} e\\ \texttt{saida\char`_blackscholes.txt}, execute o comando: \\
+		\verb|make run-bs  # para versao sequencial|  \\
+		\verb|make run-bsp # para versao paralela|
+
+	\item Para limpar todos os arquivos compilados, execute o comando: \\
+		\verb|make clean|
+
+\end{itemize}
+
+Caso não consiga compilar e rodar os programas, confira em seu sistema operacional por dependências das bibliotecas \texttt{gmp.h}, \texttt{math.h} e \texttt{pthread.h} assim como dos programas usados \texttt{make}, \texttt{gcc} e \texttt{valgrind}.
+

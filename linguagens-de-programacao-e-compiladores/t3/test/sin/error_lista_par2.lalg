@@ -1,0 +1,19 @@
+{ Esqueceu ':' nos parametros do procedimento e de funcao }
+program oi;
+
+	const c = 10;
+	var a, b: integer;
+
+	procedure meu_proc(v integer; x: real);
+	var contador: integer;
+	begin
+		contador := contador + v;
+		write(contador);
+		write(x);
+	end;
+
+	function minha_func(v: integer; x real) : integer;
+
+begin
+	a := c;
+end.

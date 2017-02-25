@@ -1,0 +1,14 @@
+{ 'for' sem 'do' }
+program oi;
+	const c = 10;
+	var a, b: integer;
+
+begin
+	read(a);
+
+	for i := 10 to 20
+	begin
+		a := a + 1;
+	end;
+
+end.

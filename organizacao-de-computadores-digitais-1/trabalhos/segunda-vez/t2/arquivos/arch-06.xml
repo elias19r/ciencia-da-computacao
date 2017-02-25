@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE AmnesiaConfiguration SYSTEM "Configuration/amnesia.dtd">
+<?xml-stylesheet type="text/css" href="teste.css"?>
+<AmnesiaConfiguration>
+	<Processor>
+		<processorContains>0</processorContains>
+		<createTraceFile>0</createTraceFile>
+	</Processor>
+	<Trace>
+		<wordSize>4</wordSize>
+	</Trace>
+	<CPU>
+		<wordSize>4</wordSize>
+	</CPU>
+<!-- MEMORIA PRINCIPAL -->
+	<MainMemory>
+		<!-- manter valor de blockSize igual o valor lineSize no ultimo nivel cache -->
+		<blockSize>2</blockSize>
+		<memorySize>32768</memorySize> <!-- 32768 palavras (128 KiB) -->
+		<ciclesPerAccessRead>1</ciclesPerAccessRead>
+		<ciclesPerAccessWrite>2</ciclesPerAccessWrite>
+		<timeCicle>2</timeCicle>
+	</MainMemory>
+<!-- NUMERO DE CACHE (CRIAR NOVA TAG <Cache>) -->
+	<Cache>
+		<!-- Os tipos de cache possiveis sao Unified e Split-->
+<!-- TIPO DE CACHE -->
+		<cacheType>Unified</cacheType>
+		<unifiedCache>
+			<!-- manter valor de blockSize igual o valor lineSize -->
+<!-- TAMANHO DO BLOCO -->
+			<lineSize>2</lineSize>
+			<ciclesPerAccessRead>1</ciclesPerAccessRead>
+			<ciclesPerAccessWrite>2</ciclesPerAccessWrite>
+			<timeCicle>1</timeCicle>
+<!-- TAMANHO DA CACHE -->
+			<memorySize>128</memorySize> <!-- 128 palavras (512B) -->
+<!-- FUNCAO DE MAPEAMENTO -->
+			<associativityLevel>4</associativityLevel> <!-- 4 blocos por conjunto -->
+			<!-- Politica de Escrita valores possiveis WriteBack e WriteThrough -->
+			<writePolicy>WriteBack</writePolicy>
+			<!-- Algoritmos de substituicao valores possiveis LRU e FIFO -->
+<!-- ALGORITMO DE SUBSTITUICAO -->
+			<replacementAlgorithm>FIFO</replacementAlgorithm>
+		</unifiedCache>
+	</Cache>
+</AmnesiaConfiguration>

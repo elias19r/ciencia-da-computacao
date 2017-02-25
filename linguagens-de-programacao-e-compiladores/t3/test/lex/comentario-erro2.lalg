@@ -1,0 +1,7 @@
+{ Testando comentario com
+mais de uma linha }
+program comm_err2;
+	var a: integer;
+begin
+	a := 10;
+end.

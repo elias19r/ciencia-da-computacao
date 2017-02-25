@@ -1,0 +1,126 @@
+\section{Como Usar \label{sec:como-usar}}
+
+\subsection{Compilação}
+
+O trabalho entregue, como requisitado, já foi previamente compilado (\texttt{Linux}), não havendo necessidade de executar esse passo. Porém, caso queira ou precise compilar novamente, basta estar dentro do diretório do trabalho e executar:
+
+	\indent\indent\texttt{make}
+
+É necessário ter instalado o compilador \texttt{gcc}, a ferramenta \texttt{flex}, assim como o utilitário \texttt{make} em sistema operacional \texttt{Linux}.
+
+\subsection{Execução}
+
+Para executar o trabalho, basta estar dentro de seu diretório e executar:
+
+	\indent\indent\texttt{./bin/main}
+
+Dessa maneira, o programa \texttt{LALG} será lido da entrada padrão \texttt{stdin}.
+
+Para executá-lo sobre um arquivo, basta redirecionar a entrada:
+
+	\indent\indent\texttt{./bin/main < meu-programa.lalg}
+
+No diretório \texttt{./test} encontram-se alguns exemplos de programa em \texttt{LALG} para testar.\\
+Por exemplo:
+
+	\indent\indent\texttt{./bin/main < ./test/programa1.lalg}
+
+Opcionalmente, para rodar para todos os programas \texttt{.lalg} de \texttt{./test}, execute:
+
+	\indent\indent\texttt{make run}
+
+As saídas serão escritas em arquivos com sufixo \texttt{\char`_out} na própria pasta \texttt{./test}.
+
+\newpage
+\subsection{Exemplo de Execução}
+
+Comando:
+	
+	\indent\indent\texttt{./bin/main < ./test/programa1.lalg}
+
+Saída:
+\begin{multicols}{2}
+\begin{verbatim}
+ 2: program - program 
+ 2:   nome1 - IDENT (identificador) 
+ 2:       ; - SEMICOLON (ponto-virgula) 
+ 3:     var - var 
+ 3:       a - IDENT (identificador) 
+ 3:       , - COMMA (virgula) 
+ 3:      a1 - IDENT (identificador) 
+ 3:       , - COMMA (virgula) 
+ 3:       b - IDENT (identificador) 
+ 3:       : - COLON (dois-pontos) 
+ 3: integer - integer 
+ 3:       ; - SEMICOLON (ponto-virgula) 
+ 4:   begin - begin 
+ 5:    read - read 
+ 5:       ( - OPAR (abre parenteses) 
+ 5:       a - IDENT (identificador) 
+ 5:       ) - CPAR (fecha parenteses) 
+ 5:       ; - SEMICOLON (ponto-virgula) 
+ 6:      a1 - IDENT (identificador) 
+ 6:      := - ATR (atribuicao) 
+ 6:       a - IDENT (identificador) 
+ 6:       * - MULT (multiplicacao) 
+ 6:       2 - INTEGER (numero inteiro) 
+ 6:       ; - SEMICOLON (ponto-virgula) 
+ 8:   while - while 
+ 8:       ( - OPAR (abre parenteses) 
+ 8:      a1 - IDENT (identificador) 
+ 8:       > - GR (maior) 
+ 8:       0 - INTEGER (numero inteiro) 
+ 8:       ) - CPAR (fecha parenteses) 
+ 8:      do - do 
+ 9:   begin - begin 
+10:   write - write 
+10:       ( - OPAR (abre parenteses) 
+10:      a1 - IDENT (identificador) 
+10:       ) - CPAR (fecha parenteses) 
+10:       ; - SEMICOLON (ponto-virgula) 
+11:      a1 - IDENT (identificador) 
+11:      := - ATR (atribuicao) 
+11:      a1 - IDENT (identificador) 
+11:       - - MINUS (subtracao) 
+11:       1 - INTEGER (numero inteiro) 
+11:       ; - SEMICOLON (ponto-virgula) 
+12:     end - end 
+12:       ; - SEMICOLON (ponto-virgula) 
+14:     for - for 
+14:       b - IDENT (identificador) 
+14:      := - ATR (atribuicao) 
+14:       1 - INTEGER (numero inteiro) 
+14:      to - to 
+14:      10 - INTEGER (numero inteiro) 
+14:      do - do 
+15:   begin - begin 
+16:       b - IDENT (identificador) 
+16:      := - ATR (atribuicao) 
+16:       b - IDENT (identificador) 
+16:       + - PLUS (adicao) 
+16:       2 - INTEGER (numero inteiro) 
+16:       ; - SEMICOLON (ponto-virgula) 
+17:       a - IDENT (identificador) 
+17:      := - ATR (atribuicao) 
+17:       a - IDENT (identificador) 
+17:       - - MINUS (subtracao) 
+17:       1 - INTEGER (numero inteiro) 
+17:       ; - SEMICOLON (ponto-virgula) 
+18:     end - end 
+18:       ; - SEMICOLON (ponto-virgula) 
+20:      if - if 
+20:       a - IDENT (identificador) 
+20:      <> - DIFFERENT (diferente) 
+20:       b - IDENT (identificador) 
+20:    then - then 
+21:   write - write 
+21:       ( - OPAR (abre parenteses) 
+21:       a - IDENT (identificador) 
+21:       ) - CPAR (fecha parenteses) 
+21:       ; - SEMICOLON (ponto-virgula) 
+22:     end - end 
+22:       . - DOT (ponto)
+\end{verbatim}
+\end{multicols}
+
+Mais exemplos estão disponíves no diretório \texttt{./test}.

@@ -1,0 +1,7 @@
+{ Testando comentario }
+program comments;
+var a: integer; { Comentario no meio}
+begin
+	a { Comentario inline } := 10; { Outro comentario }{seguido}
+end.
+{ Comentario na ultima linha! }

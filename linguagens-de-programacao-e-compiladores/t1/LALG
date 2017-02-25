@@ -1,0 +1,60 @@
+Elias Italiano Rodrigues  7987251
+Vinicius Katata Biondo    6783972
+
+--------------------------------
+ Descricao da gramatica de LALG
+--------------------------------
+
+<programa>      ::= program <ident> ; <corpo> .
+<corpo>         ::= <dc> begin <comandos> end
+<dc>            ::= <dc_c> <dc_v> <dc_p> <dc_func>
+<dc_c>          ::= const <ident> = <numero> ; <dc_c> | lambda
+<dc_v>          ::= var <variaveis> : <tipo_var> ; <dc_v> | lambda
+<tipo_var>      ::= real | integer | char
+<variaveis>     ::= <ident> <mais_var>
+<mais_var>      ::= , <variaveis> | lambda
+<dc_p>          ::= procedure <ident> <parametros> ; <corpo_p> <dc_p> | lambda
+<dc_func>       ::= function <ident> <parametros> : <tipo_var> ; <dc_func> | lambda
+<parametros>    ::= ( <lista_par> ) | lambda
+<lista_par>     ::= <variaveis> : <tipo_var> <mais_par>
+<mais_par>      ::= ; <lista_par> | lambda
+<corpo_p>       ::= <dc_loc> begin <comandos> end ;
+<dc_loc>        ::= <dc_v>
+<lista_arg>     ::= ( <argumentos> ) | lambda
+<argumentos>    ::= <ident> <mais_ident>
+<mais_ident>    ::= ; <argumentos> | lambda
+<pfalsa>        ::= else <cmd> | lambda
+<comandos>      ::= <cmd> ; <comandos> | lambda
+<cmd>           ::= read ( <variaveis> ) |
+                    write ( <variaveis> ) |
+                    while ( <condicao> ) do <cmd> |
+                    if <condicao> then <cmd> <pfalsa> |
+                    <ident> := <expressao> |
+                    <ident> := <char> |
+                    <ident> <lista_arg> |
+                    begin <comandos> end |
+                    repeat <comandos> until <condicao> |
+                    for <ident> := <expressao> to <numero_int> do begin <comandos> end
+<condicao>      ::= <expressao> <relacao> <expressao>
+<relacao>       ::= = | <> | >= | <= | > | <
+<expressao>     ::= <termo> <outros_termos>
+<op_un>         ::= + | - | lambda
+<outros_termos> ::= <op_ad> <termo> <outros_termos> | lambda
+<op_ad>         ::= + | -
+<termo>         ::= <op_un> <fator> <mais_fatores>
+<mais_fatores>  ::= <op_mul> <fator> <mais_fatores> | lambda
+<op_mul>        ::= * | /
+<fator>         ::= <ident> | <numero> | ( <expressao> )
+<numero>        ::= <numero_int> | <numero_real>
+
+
+Comentarios de unica linha entre chaves { }
+
+<char>        ::= caractere imprimivel entre aspas simples escapado ou nao com
+<ident>       ::= sequencia de letras e digitos, comecando por letra
+<numero_int>  ::= sequencia de digitos
+<numero_real> ::= pelo menos um digito, seguido de um ponto decimal, seguido de uma sequencia de um ou mais digitos
+
+Nao tem uso na gramatica em si, mas apenas para documentacao e implementacao:
+<reservado>    ::= representa qualquer palavra reservada da linguagem
+<desconhecido> ::= representa um token que nao e' conhecido pela linguagem

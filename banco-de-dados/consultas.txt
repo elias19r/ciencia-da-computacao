@@ -1,0 +1,18 @@
+select * from videos v where v.titulooriginal='$NOME' 
+
+select v.titulooriginal from videos v where v.anolancamento='$ANO'
+
+select v.titulooriginal from videos v where v.genero='$GENERO'
+
+select s.nomeepisodio, s.numepisodio, s.temporada from serie s join video v on s.video = v.id where v.titulooriginal='FRIENDS' and s.temporada='X'; 
+--- Mostra todos os episodios de uma série de uma certa temporada
+
+select distinct temporada from serie s join video v on s.video = v.id where v.titulooriginal='FRIENDS' 
+--- Seleciona todas as temporadas de uma série
+
+select v.titulooriginal, l.usuario, l.datahora, l.nome from lista l join lista_video lv on lv.lista = l.id join video_artista va on va.video = lv.video join video v on va.video = v.id where va.artista = 'Elijah Wood';
+--- Trocar Elijah Wood pelo o que usuario digitar
+--- Após selecionados os videos é listado as playlists em que os videos aparecem
+
+select v.titulooriginal, v.id from video v where v.id NOT IN (select a.video from avaliacao a where a.nota < 5.00);
+--- Seleciona todos os videos que não receberam nenhuma nota abaixo de 5, diferente de não ter a média menor que cinco

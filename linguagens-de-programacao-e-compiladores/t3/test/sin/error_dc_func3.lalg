@@ -1,0 +1,10 @@
+{ Esqueceu ';' depois da funcao }
+program oi;
+	const c = 10;
+	var a, b: integer;
+
+	function minha_func(v: integer; x: real) : integer
+
+begin
+	a := c;
+end.

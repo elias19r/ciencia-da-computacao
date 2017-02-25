@@ -1,0 +1,50 @@
+<program>
+->01 <instruction>
+->02 { <action> }
+->04 { <statement> }
+->05 { <command> }
+->06 { <print> <endline> }
+->15 { print <expr-list> <endline> }
+->17 { print <variable>, <expr-list> <endline> }
+->17 { print <variable>, <variable> <endline> }
+->18 { print $<expr>, <variable> <endline> }
+->22 { print $<expr01>, <variable> <endline> }
+->23 { print $<expr02>, <variable> <endline> }
+->24 { print $<expr03>, <variable> <endline> }
+->25 { print $<expr04>, <variable> <endline> }
+->26 { print $<expr05>, <variable> <endline> }
+->27 { print $<expr06>, <variable> <endline> }
+->28 { print $<expr07>, <variable> <endline> }
+->29 { print $<expr08>, <variable> <endline> }
+->30 { print $<expr09>, <variable> <endline> }
+->31 { print $<expr10>, <variable> <endline> }
+->32 { print $<expr11>, <variable> <endline> }
+->33 { print $<expr12>, <variable> <endline> }
+->34 { print $<expr13>, <variable> <endline> }
+->35 { print $<expr14>, <variable> <endline> }
+->36 { print $<constant>, <variable> <endline> }
+->18 { print $<constant>, $<expr> <endline> }
+->22 { print $<constant>, $<expr01> <endline> }
+->23 { print $<constant>, $<expr02> <endline> }
+->24 { print $<constant>, $<expr03> <endline> }
+->25 { print $<constant>, $<expr04> <endline> }
+->26 { print $<constant>, $<expr05> <endline> }
+->27 { print $<constant>, $<expr06> <endline> }
+->28 { print $<constant>, $<expr07> <endline> }
+->29 { print $<constant>, $<expr08> <endline> }
+->30 { print $<constant>, $<expr09> <endline> }
+->31 { print $<constant>, $<expr10> <endline> }
+->32 { print $<constant>, $<expr11> <endline> }
+->33 { print $<constant>, $<expr12> <endline> }
+->34 { print $<constant>, $<expr13> <endline> }
+->35 { print $<constant>, $<expr14> <endline> }
+->36 { print $<constant>, $<constant> <endline> }
+->56 { print $<constant>, $<constant> ; }
+->42 { print $<integer>, $<constant> ; }
+->42 { print $<integer>, $<integer> ; }
+->43 { print $<number>, $<integer> ; }
+->43 { print $<number>, $<number> ; }
+->49 { print $<digit>, $<number> ; }
+->49 { print $<digit>, $<digit> ; }
+->50 { print $2, $<digit> ; }
+->50 { print $2, $1 ; }

@@ -1,0 +1,16 @@
+{ Testando char }
+program char_test;
+	var a, b, c, d: char;
+	var i: integer;
+begin
+	a := 'x';
+	b := '\t';
+	c := '\'';
+	d := '"';
+	
+	i := 20 * 11 + 45;
+	
+	a := b;
+	
+	a := 'x' + 2;
+end.

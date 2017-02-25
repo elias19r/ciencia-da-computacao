@@ -1,0 +1,17 @@
+{ Esqueceu os parametros do procedimento }
+program oi;
+
+const c = 10;
+var a, b: integer;
+
+procedure rotina();
+var contador: integer;
+begin
+	contador := contador + v;
+	write(contador);
+	write(x);
+end;
+
+begin
+	a := c;
+end.

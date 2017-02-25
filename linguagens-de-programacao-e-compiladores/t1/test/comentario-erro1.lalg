@@ -1,0 +1,7 @@
+{ Testando comentario nao fechado!
+program comm_err;
+	var a: integer;
+begin
+	a := 10;
+end.
+{ Comentario na ultima linha }

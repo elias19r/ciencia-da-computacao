@@ -1,0 +1,13 @@
+{ Testando real e inteiro }
+program lalg;
+	var a: real;
+	var b: inteiro;
+begin
+	a := 1.a23;
+	a := 1.23;
+	b := 324;
+	b := 0324;
+	c := 10m;
+	c := 10m1;
+	c := 10m.33;
+end.

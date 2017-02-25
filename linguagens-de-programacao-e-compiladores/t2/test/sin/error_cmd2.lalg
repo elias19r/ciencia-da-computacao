@@ -1,0 +1,12 @@
+{ Esqueceu comando do if }
+program oi;
+
+	const c = 10;
+	var a, b: integer;
+
+begin
+	read(a);
+
+	if a = c then
+
+end.

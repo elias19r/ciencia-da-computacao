@@ -1,0 +1,82 @@
+\section{Introdução}
+
+\subsection{Métodos Iterativos}
+
+Muitos sistemas lineares são demasiadamente grandes para serem resolvidos por métodos diretos. Se $n$ for grande, a matriz $A$ requer muita memória para ser armazenada num computador.
+
+Por outro lado, métodos iterativos são mais rápidos e geralmente são aplicados a sistemas lineares grandes, principalmente onde $A$ é uma matriz esparsa.
+
+Um método é iterativo quando fornece uma sequência de aproximantes $\mathbf{x}^{(k+1)}$ para uma solução $\mathbf{x}$, cada qual obtido do anterior $\mathbf{x}^{(k)}$ pela aplicação de um mesmo processo.
+
+\subsection{O Método de Gauss-Seidel}
+
+Para a obtenção de um método iterativo de um sistema linear $A\mathbf{x} = \mathbf{b}$, decomponhe-se a matriz $A$ na forma $A = M + N$, onde $M$ é uma matriz não-singular e diagonal, triangular ou tri-diagonal. Dessa forma, obtém-se:
+\begin{align*}
+	A\mathbf{x}  & = \mathbf{b} \\
+	(M + N)\mathbf{x}  & = \mathbf{b} \\
+	M\mathbf{x} + N\mathbf{x}  & = \mathbf{b} \\
+	M\mathbf{x} & = \mathbf{b} - N\mathbf{x} \\
+	\mathbf{x} & = M^{-1}\mathbf{b} - M^{-1}N\mathbf{x}
+\end{align*}
+E o método iterativo dá-se por:
+\[
+	\mathbf{x}^{(k+1)} =M^{-1}\mathbf{b} - M^{-1}N\mathbf{x}^{(k)} \text{ para } k = 0, 1, 2, \dots
+\]
+
+No método de Jacobi, escolhe-se $M$ de modo que seja matriz diagonal e $N$ a matriz com os demais termos. Assim, tem-se:
+\[
+	\left \{
+		\begin{array}{llll}
+			x_{1}^{(k+1)} & = & \big[b_{1} - (a_{12}x_{2}^{(k)} + a_{13}x_{3}^{(k)} + \dots + a_{1n}x_{n}^{(k)}) \big] / a_{11}\\
+			x_{2}^{(k+1)} & = & \big[b_{2} - (a_{21}x_{2}^{(k)} + a_{23}x_{3}^{(k)} + \dots + a_{2n}x_{n}^{(k)}) \big] / a_{22}\\
+			\vdots       & = & \vdots \\
+			x_{n}^{(k+1)} & = & \big[b_{n} - (a_{n1}x_{1}^{(k)} + a_{n2}x_{2}^{(k)} + \dots + a_{nn-1}x_{n-1}^{(k)}) \big] / a_{nn}
+		\end{array}
+	\right .
+\]
+donde explicitando $x_{i}^{(k+1)}$, vem:
+\[
+	x_{i}^{(k+1)} = \Big[b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^{n}a_{ij}x_{j}^{(k)} \Big] / a_{ii} \text{ para } i = 1, 2, \dots, n \text{ e } k = 0, 1, 2, \dots
+\]
+
+Observando-se que no método de Jacobi:
+	\begin{itemize}
+		\item para calcular a componente $x_{i}^{(k+1)}$ utiliza-se os valores $x_{i}^{(k)}$
+		\item como a sequência $\{ x_{i}^{(k+1)}\}$ é convergente, então os valores $x_{j}^{(k+1)}, j = 1, 2, \dots, i-1$ constituem uma melhor aproximação para o $x_{i}$ do que os valores $x_{j}^{(k)}, j = 1, 2, \dots, i-1$
+	\end{itemize}
+
+Com base nisso, define-se um método mais otimizado por:
+	\[
+		x_{i}^{(k+1)} = \Big[b_{i} - \sum_{j = 1}^{i - 1}a_{ij}x_{j}^{(k+1)} - \sum_{j = i + 1}^{n}a_{ij}x_{j}^{(k)}\Big] / a_{ii} \text{ para } i = 1, 2, \dots, n \text{ e } k = 0, 1, 2, \dots
+	\]
+
+Esse método é conhecido como Método de Gauss-Seidel.
+
+\subsection{O Trabalho}
+
+Este trabalho consiste em implementar um programa de computador que execute o método iterativo de Gauss-Seidel para a resolução de sistemas de equações lineares. De acordo com o enunciado do trabalho, os seguintes valores são esperados como entrada para o programa:
+
+\begin{itemize}
+	\item inteiro $n \geq 0$
+	\item vetor $\mathbf{b}$ de valores constantes reais e tamanho $n$
+	\item matriz $A = (a_{ij}) \in M_{n \times n}(\mathbb{R})$ tal que
+	\[
+		\left \{
+			\begin{array}{llllll}
+				a_{i,i}   & = &  4 & \text{, } i = 1, 2, \dots, n\\
+				a_{i,i+1} & = & -1 & \text{, } i = 1, 2, \dots, n-1\\
+				a_{i+1,i} & = & -1 & \text{, } i = 1, 2, \dots, n-1\\
+				a_{i,i+3} & = & -1 & \text{, } i = 1, 2, \dots, n-3\\
+				a_{i+3,i} & = & -1 & \text{, } i = 1, 2, \dots, n-3\\
+				a_{i,j}   & = &  0 & \text{, para os restantes}\\
+			\end{array}
+		\right .
+	\] que já satisfaz as condições para o método de Gauss-Seidel, pois trata-se de uma matriz simétrica e definida positiva (SPD).
+	\item constante real $\varepsilon$ como majorante superior do erro
+	\item inteiro $itmax \geq 1$ que limita a quantidade máxima de iterações para a execução.
+\end{itemize}
+
+
+São esperados como saída do programa o vetor solução $\mathbf{x}$ de tamanho $n$ e a quantidade de iterações utilizadas até a convergência.
+
+Seja o vetor resíduo $\mathbf{r} = \mathbf{x}^{(k+1)} - \mathbf{x}^{(k)}$, a convergência ocorre quando a  $\| \mathbf{r} \|_{\infty} \leq \varepsilon$ ou quando o número máximo de iterações $itmax$ é atingido.

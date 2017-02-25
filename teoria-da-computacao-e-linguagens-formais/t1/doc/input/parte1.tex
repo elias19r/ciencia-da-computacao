@@ -1,0 +1,26 @@
+\section{Parte 1}
+
+\subsection{A Linguagem AWK}
+
+AWK é uma linguagem de programação interpretada para processamento de texto
+comumente usada para extração de dados em documentos estruturados em \emph{registro} e \emph{campo}.
+
+Um registro é qualquer quantidade de informação que represente uma entidade
+e um campo é uma parte constituinte dessa informação.
+Por exemplo: um arquivo de texto onde cada linha contenha nomes completos de alunos (registro), e
+os nomes e sobrenomes (campos) estão separados por espaço. Ou ainda, mais comum, um arquivo no
+formato \emph{.cvs} (Comma-separated values).
+
+Com AWK é possível manipular tais tipos de arquivos para gerar uma nova apresentação ou fazer
+alterações sistemáticas nos dados.
+
+\subsection{A Notação BNF}
+
+A notação BNF foi usada para escrever a primeira gramática da linguagem.
+Foram definidos os conjuntos dos terminais $V_t$ e dos não-terminais $V_n$,
+assim como o conjunto de regras $P$ da gramática e o não-terminal inicial \textless program\textgreater.
+Nessa notação foram usadas em geral as recursões à direita para definir as possíveis cadeias.
+
+\subsection{Definição Formal da Gramática em Notação BNF}
+
+\lstinputlisting[language={}]{../grammar/awk.bnf}

@@ -1,0 +1,35 @@
+\section{Quais são as implicações? \label{sec:implicacoes}}
+
+\subsection{Criptografia \label{sec:criptografia}}
+
+Atualmente, com o advento do protocolo HTTPS, conhecido como o protocolo HTTP seguro, os ataques de \textit{sniffing} são prevenidos, pois todas as informações das mensagens são criptografadas, dificultando muito a interpretação desses dados pelo atacante. Esse protocolo foi construído com o objetivo de prevenir esses tipos de ataques.
+
+Assim, com o HTTPS, as mensagens não podem ser mais lidas por meio do ataque de \textit{sniffing}, mas ainda é possível obter informações sobre remetente e o destinatário. Ainda assim, pode-se também realizar ataques \textit{man-in-the-middle} e de \textit{replay}, já que ainda há a captura do pacote.
+
+Ataque \textit{man-in-the-middle} é uma forma de ataque em que os dados trocados entre duas partes, por exemplo você e o seu banco, são de alguma forma interceptados, registrados e possivelmente alterados pelo atacante sem que as vítimas percebam. O atacante pode decidir retransmitir entre os legítimos participantes os dados inalterados, com alterações ou bloquear partes da informação. Já ataques de \textit{replay} é uma outra forma de ataque onde o interceptador reproduz as mensagens interceptadas sem alterar o conteúdo.
+
+\subsection{Leis \label{sec:leis}}
+
+Com relação as atividades de interceptações de comunicações de informática, no Brasil vigora a Lei Nº 9.296, de 24 de Julho de 1996 que segundo o artigo 10: ``Constitui crime realizar interceptação de comunicações telefônicas, de informática ou telemática, ou quebrar segredo da Justiça, sem autorização judicial ou com objetivos não autorizados em lei."~\cite{bib:lei1}
+
+Nos Estados Unidos, também existe uma lei para privacidade de comunicações eletrônicas  de 1986 que diz ser ilegal intencionalmente, ou propositadamente interceptar, divulgar ou usar o conteúdo de qualquer comunicação por fio, oral ou eletrônica através de o uso de um dispositivo de escuta.~\cite{bib:lei2}
+
+\subsection{Caso \label{sec:caso}}
+
+Segundo uma notícia publicada em 2011, o Google poderia ser investigado por interceptar, sem autorização judicial, dados privados de redes sem fio brasileiras. Segundo o pesquisador cearense Pablo Ximenes, professor de Ciência da Computação e pesquisador do Information Security Research Team (Insert), as interceptações aconteceram entre 2009 e 2010, durante o levantamento de dados para o Google Street View.~\cite{bib:caso}
+
+Segundo Ximenes, as interceptações ilegais aconteceram por meio do sistema de coleta de dados de redes sem fio realizada pelo veículo autônomo da Google. Ele afirma que o veículo usou uma técnica de captura de dados conhecida como \textit{sniffing}. Com ela, todas as ondas de rádio destinadas a uma rede sem fio eram interceptadas pela empresa. Isso inclui dados privados de usuários, como fotos, senhas, emails e documentos pessoais.
+
+Em estudo realizado pelo Insert, foi constatado que o serviço da Google teria interceptado aproximadamente 4.300 redes sem fio apenas em Minas Gerais. Segundo Jairo Ponte, advogado e professor de Direito da Faculdade Cearense (FaC) a Google teria infrigido a lei federal 9.296/96, conhecida como Lei da Interceptação Telefônica, segundo o artigo 10.
+
+Respondendo a acusação, a empresa admitiu que seu veículo interceptou redes sem fio, mas alegou só ter acessado redes públicas. Segundo a Google, os veículos capturaram apenas sinais do tipo \textit{beacon}, mensagens públicas das redes sem fio. Em nova investigação, os pesquisadores desmentiram as declarações, ao provarem que a empresa também acessou \textit{payloads}.
+
+Para tentar resolver o impasse, o próprio Google encomendou uma análise de códigos e programas utilizados pelo Street View. O estudo confirmou as denúncias, provando que o veículo coletou dados de conexões sem fio. Na lista apresentada pela análise, estavam emails completos, páginas web e senhas.
+
+O Google justificou o fato, afirmando que as interceptações ocorreram de forma não-intencional. Segundo a empresa, tudo não passou de erro de programação dos engenheiros do Street View. Além disso, o Google alegou que apenas acessou informações incompletas, já que o veículo estava em movimento.
+
+Pablo Ximenes afirma que as interceptações foram feitas de forma intencional. Um indício seria o registro da patente ``aproximação de localização baseada em redes sem fio", proposta pelo Google em 2008 e registrada em janeiro de 2010. Entre outros, a patente descreve o mesmo mecanismo de captura de dados presente no veículo do Street View.
+
+Para Ximenes, a ideia de que um erro no código de captura tenha passado despercebido é ``no mínimo ingênua". ``As rotinas de teste do Google estão entre as mais rigorosas do mundo. Se fosse um erro por parte dos engenheiros, duvido que ele não fosse sido resolvido ainda nos estágios de teste", ponderou o pesquisador.
+
+Como consequência das pressões, o Google suspendeu a coleta de dados de redes sem fio nos carros do Street View. Essa medida continua em vigor até hoje. Apesar disso, ainda existe debate sobre quais foram as reais proporções das interceptações promovidas pelo serviço.

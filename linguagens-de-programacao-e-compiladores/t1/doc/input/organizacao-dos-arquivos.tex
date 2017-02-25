@@ -1,0 +1,25 @@
+\newpage
+\section{Organização dos Arquivos \label{sec:organizacao-dos-arquivos}}
+
+O diretório do trabalho está organizado da seguinte maneira:
+
+\indent\indent\texttt{./bin} : diretório para arquivos binários executáveis.\\
+\indent\indent\indent\texttt{|-- main} : o programa principal a ser executado para fazer a análise léxica.
+
+\indent\indent\texttt{./doc} : diretório dos arquivos \LaTeX~fonte deste relatório.
+
+\indent\indent\texttt{./src} : diretório com os códigos-fonte do programa.\\
+\indent\indent\indent\texttt{|-- \texttt{lalg}.h} : definições dos \textit{tokens} da linguagem \texttt{LALG} e erros.\\
+\indent\indent\indent\texttt{|-- \texttt{lalg}.l} : programa \texttt{Lex} para a linguagem \texttt{LALG}.\\
+\indent\indent\indent\texttt{|-- \texttt{lalg}.c} : programa \texttt{C} gerado pelo \texttt{flex}.\\
+\indent\indent\indent\texttt{|-- main.c} : programa principal que usa o \texttt{\texttt{lalg}.c}.
+
+\indent\indent\texttt{./test} : diretório com exemplos de programa \texttt{LALG}.
+
+\indent\indent\texttt{Makefile} : arquivo para automizar compilação e execução usando o utilitário \texttt{make}.
+
+\indent\indent\texttt{\texttt{LALG}} : definição da linguagem \texttt{LALG}.
+
+\indent\indent\texttt{RELATORIO.pdf} : este relatório PDF compilado a partir de \texttt{./doc}.
+
+\indent\indent\texttt{README} : arquivo com instruções.

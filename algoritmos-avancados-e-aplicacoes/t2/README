@@ -1,0 +1,17 @@
+Disciplina:
+	Algoritmos Avancados e Aplicacoes, BCC, ICMC-USP
+	Professor Gustavo Batista
+
+Grupo do trabalho:
+	Elias Italiano Rodrigues, 7987251
+	Rodolfo Megiato de Lima,  7987286
+
+Para compilar:
+	make
+
+Para rodar:
+	make run
+
+Observacao:
+	Os arquivos de dados ficam no diretorio ./data
+

@@ -1,0 +1,82 @@
+\section{Desenvolvimento}
+
+O programa foi desenvolvido em linguagem \texttt{C} em sistema operacional \texttt{GNU/Linux}. Além das bibliotecas convencionais \texttt{stdlib.h} e \texttt{stdio.h}, foi utilizada também a \texttt{omp.h} do OpenMP.
+
+\subsection{Floyd-Warshall -- Sequencial}
+
+A implementação do código sequencial do algoritmo Floyd-Warshall foi uma tradução direta do pseudo-código para o programa em \texttt{C}. Para a execução desse algoritmo, o grafo foi modelado como uma matriz de adjacências $n \times n$.
+
+Optou-se por desprezar o vetor de nós predecessores que não foi requerido na resolução do problema, já que a saída é apenas a distância em que o hospital estaria da casa mais longínqua.
+
+Como a saída do algoritmo é uma tabela de distância entre todos os vértices, foi necessário buscar nesse vetor a menor distância entre os maiores caminhos de cada um das junções.
+
+\subsection{Floyd-Warshall -- Paralelo \label{problema}}
+
+A paralelização do algoritmo Floyd-Warshall, utilizando OpenMP, foi implementada dividindo-se o primeiro laço de repetição \texttt{for} executando partes dele em cada uma das \textit{threads} inicializadas. Para fazer isso, utilizou-se a diretiva OpenMP:
+
+\texttt{\char`\#pragma omp parallel for private(k, i, j)}
+
+Com isso, o \texttt{for} foi dividido pelo número de \textit{threads}, mantendo as variáveis de iteração \textit{i}, \textit{j} e \textit{k} como \textit{private} para \textbf{tentar} garantir a integridade dos dados. Porém, ao serem efetuados testes com a versão paralela, constatou-se que em uma pequena parcela das execuções, o resultado retornado era diferente do esperado. Devido à alta dependência entre os índices dos laços, a paralelização utilizando as diretivas OpenMP não consegue garantir o resultado determinístico do algoritmo.
+
+Além disso, durante a programação foi encontrado um outro problema. Antes foi utilizado o comando \texttt{continue} da linguagem \texttt{C} dentro dos laços do algoritmo para ignorar os vértices que não tem arestas entre si. A utilização desse comando ocasionava também erros no resultado do programa, que foi averiguado após vários testes. Esse problema com os comandos \texttt{continue} e \texttt{break} na paralelização de laços com OpenMP foi discutido no fórum dos desenvolvedores. \cite{continue_break}
+
+\subsection{Dijkstra -- Sequencial}
+
+Para Dijkstra, o grafo teve que ser transformado em uma implementação de lista de adjacências. Essa abstração de um grafo utilizando lista de adjacências, contém uma lista de arestas que representa todos os vértices ao qual um determinado vértice está conectado. Além disso, foi necessário o desenvolvimento de uma lista para salvar os custos para cada vértice e assim escolher qual será o próximo vértice a ser visitado.
+
+Nesse caso, também não foi necessário armazenar o vetor de vértices predecessores, pois não é requerido para a resolução do problema.
+
+\subsection{Dijkstra -- Paralelo}
+
+A paralelização do algoritmo de Dijkstra, utilizando OpenMP, foi implementada dividindo-se o laço de repetição \texttt{for} que realiza a chamada da função do Dijkstra. Dessa forma, cada uma das \textit{threads} inicializadas é responsável pela chamada de uma quantidade de vezes do Dijkstra, um para cada vértice que ficou designada. Para realizar essa operação, foi utilizada a seguinte diretiva:
+
+\texttt{\char`\#pragma omp parallel for}
+
+\subsection{Cálculo das Estatísticas}
+
+Além dos algoritmos para a resolução do problema, foi implementado um outro programa para auxiliar o cálculo das média, desvios padrão e intervalo de confiança dos tempos das execuções. Esse programa \texttt{./bin/stats} recebe como entrada o número de execuções seguido dos tempos de cada execução de um dos algoritmos. O arquivo dos tempos de execução é gerado através de um \emph{shell script} \texttt{./run.sh} que roda os programas uma quantidade informada de vezes.
+
+\subsection{Compilação e Execução dos Programas}
+
+Estando no diretório raiz dos arquivos deste trabalho, é possível compilar e executar os programas seguindo as instruções:
+
+\begin{itemize}
+	\item Valores de entrada: \\
+		\verb|#algoritmo : 0 para Dijkstra e 1 para Floyd-Warshall| \\
+		\verb|#nthreads  : quantidade de threads (só tem efeito para versão paralela)| \\
+		\verb|#arquivo   : nome do arquivo de entrada| \\
+		\verb|#vezes     : número de vezes que os programas serão executados|
+
+	\item Para compilar todos programas, execute: \\
+		\verb|make|
+
+	\item Para rodar a versão sequencial, execute: \\
+		\verb|./bin/sequential #algoritmo < #arquivo|
+
+		Por exemplo: \\
+		\verb|./bin/sequential 0 < input01|
+
+	\item Para rodar a versão paralela, execute: \\
+		\verb|./bin/parallel #algoritmo #nthreads < #arquivo|
+
+		Por exemplo: \\
+		\verb|./bin/parallel 0 4 < input01|
+
+	\item Para limpar todos os arquivos compilados, execute: \\
+		\verb|make clean|
+		
+	\item Para rodar vários testes, paralelo e sequencial, execute: \\
+		\verb|./run.sh #algoritmo #nthreads #arquivo #vezes|
+
+		Por exemplo: \\
+		\verb|./run.sh 0 4 input01 10|
+
+	\item Para conferir por vazamento de memória, execute: \\
+		\verb|make memcheck ALG=#algoritmo|
+
+\end{itemize}
+
+Caso não consiga compilar e rodar os programas, confira por dependências
+da OpenMP, assim como dos programas usados \texttt{make}, \texttt{gcc} e \texttt{valgrind}
+no seu sistema operacional.
+

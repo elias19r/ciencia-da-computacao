@@ -1,0 +1,13 @@
+\section{Decisões de Projeto \label{sec:decisoes-de-projeto}}
+
+\subsection{\texttt{lalg.y}}
+
+Para armazenar os símbolos -- variáveis, constantes e procedimentos --, foram utilizadas tabelas \textit{hash} da biblioteca \texttt{<search.h>}. Uma tabela \textit{hash} é utilizada por escopo, ou seja, ao necessitar de um novo escopo, uma nova tabela é criada para armazenar os símbolos desse novo escopo.
+
+Para simplificar a codificação, definiu-se estruturas e uniões de dados convenientes, como por exemplo, \texttt{struct data\char`_s} que guarda o tipo e o valor de um dado; e o valor de um dado é representado pela \texttt{union val\char`_u} que pode assumir qualquer um dos possíveis valores do LALG.
+
+A detecção dos erros semânticos consistiu em manipular as tabelas \textit{hash} e estruturas de dados auxiliares como listas temporárias de variáveis, parâmetros e argumentos.
+
+\subsection{\texttt{lalg.l}}
+
+No parte léxica foi apenas necessário alterar a os retornos dos valores dos \textit{tokens}, que agora utilizam a \texttt{struct data\char`_s}.

@@ -1,0 +1,10 @@
+Conectar ao cluster
+	ssh grupo02b@cosmos.lasdpc.icmc.usp.br -p 22200
+	ssh grupo-02b@andromeda.lasdpc.icmc.usp.br -p 2010
+Ou
+	sftp://grupo02b@cosmos.lasdpc.icmc.usp.br:22200/
+	sftp://grupo-02b@andromeda.lasdpc.icmc.usp.br:2010/
+
+Imagem de teste big-in.jpg => big-in.ppm
+	10720 x 7120
+	http://images.forwallpaper.com/files/images/d/d007/d007218f/188929/sunset-nature-trees.jpg

@@ -1,0 +1,8 @@
+\newpage
+\section{Conclusão}
+
+Na a implementação desse trabalho, não houve desafios evidentes quanto ao encontrar algoritmos para a solução do problema, uma vez que tais algoritmos são amplamente conhecidos. Uma parte da dificuldade dá-se à modelagem do problema como um grafo para então aplicar o algoritmo e buscar a menor distância de um hospital e uma esquina na fictícia cidade de ICMCTown. Além disso, a implementação dos algoritmos deveriam ser possíveis de paralelizar e produzir a solução de forma mais eficiente.
+
+Então, com a utilização dos dois algoritmos -- Floyd-Warshall e Dijkstra -- a paralelização ficou trivial de se fazer, pois utilizando os recursos da OpenMP, apenas foi necessário acrescentar uma diretiva de paralelização para cada algoritmo.
+
+Mas é importante notar também, que nem sempre é possível conseguir uma paralelização total que garanta a integridade dos dados quando estes são muito dependentes, como foi visto no caso do algoritmo Floyd-Warshall no tópico \ref{problema}. Nessas situações, uma análise detalhada do algoritmo é necessária e talvez o uso de \texttt{pthread} para se ter controle mais preciso do comportamento do paralelismo ao invés usar recursos mais abstratos como as diretivas do OpenMP.

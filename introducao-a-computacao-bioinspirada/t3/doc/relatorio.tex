@@ -1,0 +1,426 @@
+% =========================================================
+%  Cabeçalho
+% =========================================================
+
+% Define papel, tamanho global de fonte, tipo de documento
+\documentclass[a4paper, twoside, 12pt]{article}
+
+% Pacotes usados
+\usepackage[utf8]{inputenc} % enconding de caracteres
+\usepackage[brazil]{babel}  % locale pt_BR
+\usepackage[lmargin=2cm, rmargin=2cm, tmargin=2cm, bmargin=2cm]{geometry} % margens da folha
+\usepackage{indentfirst} % sempre indenta o primeiro parágrafo
+
+% Multicolunas
+\usepackage{multicol}
+
+% Tabelas
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
+
+% Matemática
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{gensymb}
+
+% Tabela longa que quebra entre as paginas
+\usepackage{longtable}
+
+% Para links e url
+\usepackage[hidelinks]{hyperref}
+
+% Código fonte
+\usepackage{listings} % listagem de código-fonte
+\renewcommand*{\lstlistingname}{Listagem} % texto para listagem de código
+\usepackage{color} % cor para usar na listagem de código-fonte
+
+% Imagens
+%\usepackage{svg}
+\usepackage{graphicx,xcolor} % para inserir imagens
+\usepackage[nottoc,notlot,notlof]{tocbibind} % adiciona o tópico Referências ao Sumário
+\usepackage{textcomp} % accesso \textquotesingle
+
+% Para desenhar grafos
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,shapes,decorations}
+
+% Desenhar circulos
+%\usepackage{tkz-euclide}
+%\usetkzobj{all}
+
+% Escrever algoritmos em pseudo-código
+%\usepackage[portuguese,linesnumbered]{algorithm2e}
+
+% Tabelas
+\usepackage{booktabs}
+\usepackage{caption}
+
+% Estilos para usar nos grafos
+\tikzset{
+	>=stealth',
+	punkt/.style={
+		rectangle,
+		text centered,
+		inner sep=0.7em,
+		draw,
+		fill=blue!5
+	},
+	pil/.style={
+		->,
+		thick,
+		shorten <=2pt,
+		shorten >=2pt
+	}
+}
+
+% Para plotar gráficos
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+
+% Para desenhar grafos
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,shapes,decorations}
+
+% Define cores para o highlight de código-fonte
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+% Define configuração para listagem de código-fonte em linguagem C
+\lstset{
+	frame=tb,
+	language=C,
+	aboveskip=2mm,
+	belowskip=2mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=false,
+	tabsize=4
+}
+
+% =========================================================
+%  Documento
+% =========================================================
+
+% Começo do documento
+\begin{document}
+
+% Define algum espaçamento que eu não lembro, hehe :)
+\setlength\parskip{0.3cm}
+
+% =========================================================
+%  Capa
+% =========================================================
+
+% Começo da folha de Capa
+\begin{titlepage}
+
+		% Título
+		\title{
+\textsc {\large{Universidade de São Paulo\\
+Instituto de Ciências Matemáticas e de Computação}}\\[1cm]
+\large{SCC0272 -- Introdução à Computação Bioinspirada}\\[6cm]
+\LARGE{Trabalho 3 -- Algoritmo ACO para resolver TSP}\\[5.5cm]
+		}
+
+		% Autores
+		\author{
+Elias Italiano Rodrigues -- 7987251\\
+Vinicius Katata Biondo -- 6783972
+		}
+
+		% Inserção manual de data
+		\date{
+\vfill São Carlos, 03 de julho de 2015
+		}
+
+		% Cria a Capa
+		\maketitle
+		\thispagestyle{empty}
+
+% Fim da folha de Capa
+\end{titlepage}
+	
+% Reseta contador de página para 1 (assim não conta a Capa como página)
+\setcounter{page}{1}
+
+% =========================================================
+%  Sumário
+% =========================================================
+
+% Cria o Sumário
+\tableofcontents
+
+% Cria uma nova página, forçando o Sumário a ficar numa página separada
+\clearpage
+
+% =========================================================
+%  Conteúdo
+% =========================================================
+
+\section{Introdução \label{sec:introducao}}
+
+Este trabalho implementa o algoritmo ACO (\textit{Ant Colony Optimization}) para resolver TSP (\textit{Travelling Salesman Problem}), também conhecido em português como ``O Problema do Caixeiro Viajante".
+
+O algoritmo implementado pode ser executado com uma quantidade arbitrária de \textit{threads}. Os parâmetros do algoritmo também podem ser definidos pelo usuário como descrito na Seção~\ref{sec:params}.
+
+O objetivo desse relatório é mostrar e comentar a execução do algoritmo para diferentes valores de \textit{formigas} e \textit{threads} para um escolhido caso de teste.
+
+\section{O Programa \texttt{aco-tsp} \label{sec:prog}}
+
+O programa implementa o algoritmo ACO em linguagem C especificamente para resolver TSPs do tipo \texttt{EUC\char`_2D} obtidos do TSPLIB \cite{bib:tsplib}.
+
+\subsection{Estrutura}
+
+O diretório do projeto que acompanha este documento está organizado da seguinte maneira:
+
+\indent\texttt{./data}\\
+\indent\indent\texttt{|-- ./tsp\char`_euc-2d} : diretório com os arquivos \texttt{.tsp} para teste.\\
+\indent\indent\texttt{|-- README} : informação sobre como foram obtidos e tratados os casos de teste.\\
+\indent\indent\texttt{|-- optimal.result} : arquivo com os resultados ótimos conhecidos.\\
+\indent\texttt{./doc} : arquivos-fonte deste relatório.\\
+\indent\texttt{Makefile} : arquivo para automação do processo de compilação do programa.\\
+\indent\texttt{README} : instruções de como compilar e executar o programa.\\
+\indent\texttt{RELATORIO\char`_pt-br.pdf} : este relatório compilado a partir de \texttt{./doc}.\\
+\indent\texttt{aco-tsp} : programa compilado em sistema operacional Linux.\\
+\indent\texttt{main.c} : código-fonte do programa em linguagem C.\\
+\indent\texttt{test.sh} : \textit{shell-script} para testar o programa compilado.
+
+\subsection{Parâmetros \label{sec:params}}
+
+O programa foi feito para aceitar \textit{flags} pelas quais podem ser informados parâmetros de execução. Seguem as descrições para cada \textit{flag} disponível (pode-se consultá-las executando \texttt{./aco-tsp --help} na linha de comando):
+
+\begin{verbatim}
+  -i, --in           input .tsp EUC_2D file from TSPLIB
+                     (default ./data/tsp_euc-2d/a280.tsp)
+  -e, --expected     expected results (default ./data/optimal.result)
+  -t, --threads      number of threads to be used (default 1)
+  -k, --ants         number of ants (default 10)
+  -a, --alpha        alpha constant (default 1.000000)
+  -b, --beta         beta constant (default 1.000000)
+  -r, --rho          rho constant (default 0.100000)
+  -p, --pheromone    initial pheromone value (default 1.000000)
+  -w, --weight       weight for depositing pheromone (default 1.000000)
+  -n, --times        number of runs (default 1)
+  --print            print progress of best distances for each iteration
+  --help             print this help information
+  --version          print version number
+\end{verbatim}
+
+\textbf{Exemplo:} o seguinte comando executa o programa 100 vezes sobre o caso de teste padrão (\texttt{./data/tsp\char`_euc-2d/a280.tsp}) utilizando 2 \textit{threads}, 20 formigas e os valores 2, 2 e 0.15 para as constantes $\alpha$, $\beta$ e $\rho$ respectivamente.
+
+\texttt{./aco-tsp -t 2 -k 20 --alpha 2 --beta 2 --rho 0.15 -n 100}
+
+O resultado obtido é impresso na saída padrão no seguinte formato:
+
+\begin{verbatim}input path            : ./data/tsp_euc-2d/a280.tsp
+input filename        : a280.tsp
+input dimension       : 280
+expected results file : ./data/optimal.result
+
+threads   : 2
+ants      : 20
+alpha     : 2.000000
+beta      : 2.000000
+rho       : 0.150000
+pheromone : 1.000000
+weight    : 1.000000
+times     : 100
+
+time (s)        : 12.740000
+ants result     : 2778
+expected result : 2579
+error           : 0.077162
+
+ants path       :
+0 279 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51
+52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76
+77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101
+102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120
+121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139
+140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158
+159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177
+178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196
+197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215
+216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 232 233 234
+235 236 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 252 253
+254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 271 272
+273 274 275 276 277 278\end{verbatim}
+
+\section{Execuções e Comentários \label{sec:execucoes}}
+
+Escolhido o caso de teste \texttt{./data/tsp\char`_euc-2d/a280.tsp}, definiu-se executar o programa 10 vezes variando-se o número de \textit{threads} em 1, 2 e 4, e o número de formigas em 10, 100, 1000. As constantes escolhidas foram $\alpha = 2$, $\beta = 2$, $\rho = 0.15$.
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h]
+\centering
+\caption{Resultados obtidos nas execuções. \label{tab:execucoes}}
+\begin{tabular}{|c|
+>{\columncolor[HTML]{EFEFEF}}l |c|c|c|}
+\hline
+\cellcolor[HTML]{EFEFEF} & \multicolumn{1}{c|}{\cellcolor[HTML]{EFEFEF}} & \multicolumn{3}{c|}{\cellcolor[HTML]{EFEFEF}{\bf Formigas}} \\ \cline{3-5} 
+\multirow{-2}{*}{\cellcolor[HTML]{EFEFEF}{\bf Threads}} & \multicolumn{1}{c|}{\multirow{-2}{*}{\cellcolor[HTML]{EFEFEF}{\bf Dados}}} & \cellcolor[HTML]{EFEFEF}{\bf 10} & \cellcolor[HTML]{EFEFEF}{\bf 100} & \cellcolor[HTML]{EFEFEF}{\bf 1000} \\ \hline
+\multicolumn{1}{|l|}{} & {\bf Esperado} & \multicolumn{3}{c|}{\cellcolor[HTML]{EFEFEF}2579} \\ \hline\hline
+ & {\bf Obitdo} & 2967 & 2847 & 2784 \\ \cline{2-5} 
+ & {\bf Erro} & 0.150446 & 0.103916 & 0.079488 \\ \cline{2-5} 
+\multirow{-3}{*}{1} & {\bf Tempo (s)} & 0.540838 & 5.341067 & 54.789295 \\ \hline\hline
+ & {\bf Obtido} & 2952 & 2916 & 2784 \\ \cline{2-5} 
+ & {\bf Erro} & 0.144630 & 0.130671 & 0.079488 \\ \cline{2-5} 
+\multirow{-3}{*}{2} & {\bf Tempo (s)} & 0.271209 & 2.714911 & 27.986094 \\ \hline\hline
+ & {\bf Obtido} & 2991 & 2929 & 2789 \\ \cline{2-5} 
+ & {\bf Erro} & 0.159752 & 0.135712 & 0.081427 \\ \cline{2-5} 
+\multirow{-3}{*}{4} & {\bf Tempo (s)} & 0.317286 & 2.706635 & 27.962556 \\ \hline
+\end{tabular}
+\end{table}
+
+As execuções foram realizadas no seguinte computador:
+
+\begin{verbatim}
+Hardware:
+Processor: Intel Core 2 Duo CPU T6600 @ 2.20GHz (Total Cores: 2)
+Motherboard: clevo M7x0S, Chipset: SiS
+System Memory: 2 x 2048 MB DRAM
+Graphics: SiS [SiS] 771/671 PCIE VGA Display Adapter 256MB
+
+Software:
+OS: Ubuntu 10.04, Kernel: 2.6.32-74-generic-pae (i686)
+Compiler: GCC 4.4.3
+\end{verbatim}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={Quantidade de formigas (escala logarítmica base 10)},
+    ylabel={Erro obtido},
+    xmax=2000,
+    ymin=0, ymax=0.2,
+    xtick={0,10,100,1000},
+    ytick={0,0.05,0.1,0.15,0.2},
+	xmode=log,
+	log basis x={10},
+    scaled ticks=false,
+    tick label style={/pgf/number format/fixed},
+    legend pos=north east,
+    ymajorgrids=true,
+	xmajorgrids=true,
+    grid style=dashed,
+	/pgf/number format/1000 sep={},
+]
+\addplot[color=red,mark=square]
+    coordinates {
+    	(10,   0.150446)
+    	(100,  0.103916)
+    	(1000, 0.079488)
+    };
+\addlegendentry{1 \textit{thread}}
+
+\addplot[color=blue,mark=square]
+    coordinates {
+    	(10,  0.144630)
+    	(100, 0.130671)
+    	(1000,0.079488)
+    };
+\addlegendentry{2 \textit{threads}}
+
+\addplot[color=green,mark=square]
+    coordinates {
+    	(10,  0.159752)
+    	(100, 0.135712)
+    	(1000,0.081427)
+    };
+\addlegendentry{4 \textit{threads}}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Comparativo dos erros obtidos em relação ao número de formigas. \label{fig:graf1}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xlabel={Quantidade de threads (escala logarítmica base 2)},
+    ylabel={Tempo (s)},
+    xmax=5,
+    ymin=0, ymax=60,
+    xtick={0,1,2,4},
+    ytick={0,10,20,30,40,50,60},
+	xmode=log,
+	log basis x={2},
+    scaled ticks=false,
+    tick label style={/pgf/number format/fixed},
+    legend pos=north east,
+    ymajorgrids=true,
+	xmajorgrids=true,
+    grid style=dashed,
+	/pgf/number format/1000 sep={},
+]
+\addplot[color=red,mark=square]
+    coordinates {
+    	(1, 0.540838)
+    	(2, 0.271209)
+    	(4, 0.317286)
+    };
+\addlegendentry{10 formigas}
+
+\addplot[color=blue,mark=square]
+    coordinates {
+    	(1, 5.341067)
+    	(2, 2.714911)
+    	(4, 2.706635)
+    };
+\addlegendentry{100 formigas}
+
+\addplot[color=green,mark=square]
+    coordinates {
+    	(1, 54.789295)
+    	(2, 27.986094)
+    	(4, 27.962556)
+    };
+\addlegendentry{200 formigas}
+
+\end{axis}
+\end{tikzpicture}
+\caption{Comparativo dos tempos obtidos de acordo com o número de \textit{threads}. \label{fig:graf2}}
+\end{figure}
+
+Como pode-se observar pelo gráfico da Figura~\ref{fig:graf1}, independentemente do número de \textit{threads}, o erro obtido diminuiu conforme aumentou-se o número de formigas. Esse comportamento é esperado, pois sabe-se do algoritmo que quanto maior o número de formigas, maiores são as chances de um menor caminho ser percorrido.
+
+Pelo gráfico da Figura~\ref{fig:graf2} pode-se concluir que a quantidade de \textit{threads} influenciou diretamente no tempo de execução, pois tornou possível formigas percorrerem o caminho paralelamente. Percebe-se que o ganho de 2 para 4 \textit{threads} é muito pequeno, justificado pelas configurações do computador usado que não possui mais do que 2 \textit{cores} de processamento.
+
+Da Tabela~\ref{tab:execucoes}, observa-se que o número de \textit{threads} não influenciou na qualidade da solução obtida \underline{nesse experimento}, pois o erro pouco variou com o aumento do número de \textit{threads}. Portanto, o aumento das \textit{threads} só permitiu uma execução mais rápida.
+
+\clearpage
+\section{Conclusão \label{sec:conclusao}}
+
+Com este trabalho foi possível aprender mais sobre a algoritmo ACO, analisar seu comportamento na prática com a variação de parâmetros, conhecer a base de casos de teste do TSPLIB e ter uma experiência \textit{hands on} na programação do ACO em linguagem C com pthreads.
+
+
+% =========================================================
+%  Referências
+% =========================================================
+
+% Começo das Referências
+\begin{thebibliography}{9}
+
+	\bibitem{bib:tsplib}
+		TSPLIB\\
+		\textless http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/\textgreater
+
+% Fim das Referências
+\end{thebibliography}
+
+% Fim do documento
+\end{document}

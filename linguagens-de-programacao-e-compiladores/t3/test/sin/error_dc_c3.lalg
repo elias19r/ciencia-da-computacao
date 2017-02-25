@@ -1,0 +1,6 @@
+{ Esqueceu ';' na declaracao de constante }
+program oi;
+const c = 10
+begin
+	a := c;
+end.

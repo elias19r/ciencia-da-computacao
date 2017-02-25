@@ -1,0 +1,23 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+SCC0205 Teoria da Computacao e Linguagens Formais
+Trabalho 1 - Analisador Lexico e Sintatico para Linguagem AWK
+
+Elias Italiano Rodrigues         7987251
+Gabriel Tessaroli Giancristofaro 4321350
+Paulo Augusto de Godoy Patire    7987060
+
+==================================================
+
+Aqui esta' o relatorio em LaTeX.
+
+O relatorio compilado em formato PDF encontra-se em:
+	./output/relatorio.pdf
+
+Para re-compilar o relatorio, execute:
+	make
+
+Observacao: o relatorio "puxa" os arquivos dos diretorios
+../src , ../grammar e ../derivation
+

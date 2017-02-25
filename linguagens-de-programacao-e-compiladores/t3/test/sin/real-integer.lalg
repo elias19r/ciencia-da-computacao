@@ -1,0 +1,8 @@
+{ Testando real e inteiro }
+program lalg;
+	var a: real;
+	var b: integer;
+begin
+	a := 1.23;
+	b := 324;
+end.

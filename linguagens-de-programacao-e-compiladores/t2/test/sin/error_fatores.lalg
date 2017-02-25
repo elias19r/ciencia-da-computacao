@@ -1,0 +1,11 @@
+{ erros com fatores}
+program oi;
+	const c = 10;
+	var a, b: integer;
+
+begin
+	read(a);
+
+	a := -1 * (+3); { OK }
+	a := -1 * +3; { ERRO }
+end.

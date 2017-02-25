@@ -1,0 +1,7 @@
+\section{Conclusão}
+
+A paralelização nem sempre pode levar a resultados melhores, pois existem vários outros detalhes a serem considerados, como por exemplo a quantidade de núcleos da CPU, quantos e quais processos estão em execução no sistema operacional etc.
+
+Neste trabalho, vimos com Gauss-Legendre e Borwein (1984) que o ganho final foi pouco significativo apesar desses dois algoritmos terem sidos paralelizados com grau de concorrência 4 e 5, respectivamente. Por outro lado, o ganho com a paralelização do Método de Monte Carlo para $\pi$ e do Black-Scholes mostrou-se significativo, porém não ao ponto de ser proporcional ao número de \emph{threads} utilizadas.
+
+A produção desde trabalho nos introduziu às bibliotecas \texttt{gmp.h} e \texttt{pthread.h}, a pensar em como ``quebrar" um algoritmo de modo a codificá-lo em \textit{threads} e à técnica de decomposição usando grafo de dependência de tarefas segundo o livro-texto~\cite{livro} da disciplina. Isso é um retorno positivo para nós.

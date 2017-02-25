@@ -1,0 +1,361 @@
+-- MySQL das tabelas
+
+-- Character : utf8
+-- Collate   : utf8_general_ci (character encoding com suporte a acentuação)
+-- Engine    : InnoDB (suporta modelo ACID, com transações, commit, rollback e recuperação de falhas)
+
+-- Criação do banco de dados com escolha do encoding de caracteres
+CREATE DATABASE BD_T3 DEFAULT CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+
+-- Seleciona o banco a ser usado
+USE BD_T3;
+
+-- Tabela Usuario
+CREATE TABLE USUARIO(
+	NOMEUSUARIO  VARCHAR(20) NOT NULL,
+	SENHA        VARCHAR(40) NOT NULL,
+	NOMECOMPLETO VARCHAR(40) NOT NULL,
+	DATANASC     DATE        NOT NULL, -- formato 'yyyy-mm-dd'
+	EMAIL        VARCHAR(40) NOT NULL,
+	STATUS       CHAR(1)     DEFAULT 'a', -- a: ativo, x: excluído, b: bloqueado. Esse campo foi adicionado posteriormente pois decidiu-se não excluir definitivamente as tuplas dos usuários.
+
+	PRIMARY KEY(NOMEUSUARIO),
+
+	CHECK(STATUS IN ('a', 'x', 'b')) -- Check para garantir a integridade nesse campo que funciona como uma flag
+) ENGINE=InnoDB;
+
+-- Tabela Video
+CREATE TABLE VIDEO(
+	ID             INT UNSIGNED  NOT NULL AUTO_INCREMENT, -- o tipo de dado int unsigned foi escolhido para suportar uma grande quantidade de ids. auto_increment automaticamente incrementa a id da ultima tupla e utiliza na insercao da seguinte
+	TITULOORIGINAL VARCHAR(60)   NOT NULL,
+	ANOLANCAMENTO  SMALLINT      NOT NULL,
+	DISTRIBUIDORA  VARCHAR(40)   NOT NULL,
+	LICENCA        VARCHAR(40)   NOT NULL,
+	TITULOPT       VARCHAR(60),
+	GENERO         VARCHAR(40)   NOT NULL,
+	CLASSEETARIA   SMALLINT      NOT NULL, -- idade mínima
+	DURACAO        SMALLINT      NOT NULL, -- em minutos
+	TAMANHO        INT UNSIGNED  NOT NULL, -- em MB aproximadamente
+	AVALIACAO      DECIMAL(2,1), -- média das notas de avaliação recebidas
+	SINOPSE        VARCHAR(200),
+	TRAILER        VARCHAR(100), -- URL do trailer do vídeo
+	RESOLUCAO      VARCHAR(20)   NOT NULL,
+	AUDIO          VARCHAR(100)  NOT NULL,
+	LEGENDA        VARCHAR(100)  NOT NULL,
+	PRECO          DECIMAL(5,2)  NOT NULL,
+	TIPO           CHAR(1)       NOT NULL, -- 'f' filme, 's' série
+
+	PRIMARY KEY(ID),
+	UNIQUE(TITULOORIGINAL, ANOLANCAMENTO),
+
+	CHECK(TIPO IN ('f', 's'))
+) ENGINE=InnoDB;
+
+-- Tabela Serie
+CREATE TABLE SERIE(
+	NOMEEPISODIO VARCHAR(40)  NOT NULL,
+	NUMEPISODIO  TINYINT      NOT NULL, -- inteiro muito pequeno para armazenar os numeros de episodios
+	TEMPORADA    TINYINT      NOT NULL, -- inteiro muito pequeno para armazenar as temporadas
+	VIDEO        INT UNSIGNED NOT NULL,
+
+	PRIMARY KEY(NOMEEPISODIO, NUMEPISODIO, TEMPORADA),
+	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
+) ENGINE=InnoDB;
+
+-- Tabela Video_Premiacao
+CREATE TABLE VIDEO_PREMIACAO(
+	VIDEO     INT UNSIGNED NOT NULL,
+	PREMIACAO VARCHAR(40)  NOT NULL,
+
+	PRIMARY KEY(VIDEO, PREMIACAO),
+	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
+) ENGINE=InnoDB;
+
+-- Tabela Avaliacao
+CREATE TABLE AVALIACAO(
+	USUARIO VARCHAR(20)  NOT NULL,
+	VIDEO   INT UNSIGNED NOT NULL,
+	REVIEW  TEXT, -- campo que permite longas strings de texto
+	NOTA    DECIMAL(2,1) NOT NULL,
+
+	PRIMARY KEY(USUARIO, VIDEO),
+	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
+	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
+) ENGINE=InnoDB;
+
+-- Tabela Contato
+-- Ao ser inserido um contato de A com B a aplicação se encarrega de criar o contato contrário (B com A)
+CREATE TABLE CONTATO(
+	USUARIOA VARCHAR(20) NOT NULL,
+	USUARIOB VARCHAR(20) NOT NULL,
+	DATAHORA DATETIME    NOT NULL, -- formato 'yyyy-mm-dd hh:mm:ss'
+
+	PRIMARY KEY(USUARIOA, USUARIOB),
+	FOREIGN KEY(USUARIOA) REFERENCES USUARIO(NOMEUSUARIO),
+	FOREIGN KEY(USUARIOB) REFERENCES USUARIO(NOMEUSUARIO)
+) ENGINE=InnoDB;
+
+-- Tabela Chat
+-- Tabela que guarda as mensagens do usuario A para B
+CREATE TABLE CHAT(
+	USUARIOA  VARCHAR(20) NOT NULL,
+	USUARIOB  VARCHAR(20) NOT NULL,
+	DATAHORA  DATETIME    NOT NULL,
+	CONTEUDO  TEXT        NOT NULL,
+	DATAVISTO DATETIME,
+
+	PRIMARY KEY(USUARIOA, USUARIOB, DATAHORA),
+	FOREIGN KEY(USUARIOA, USUARIOB) REFERENCES CONTATO(USUARIOA, USUARIOB)
+) ENGINE=InnoDB;
+
+-- Tabela Artista
+CREATE TABLE ARTISTA(
+	NOMEARTISTICO VARCHAR(40) NOT NULL,
+	NOME          VARCHAR(40),
+
+	PRIMARY KEY(NOMEARTISTICO)
+) ENGINE=InnoDB;
+
+-- Tabela Artista_Tipo
+CREATE TABLE ARTISTA_TIPO(
+	ARTISTA VARCHAR(40) NOT NULL,
+	TIPO    VARCHAR(20) NOT NULL,
+
+	PRIMARY KEY(ARTISTA, TIPO),
+	FOREIGN KEY(ARTISTA) REFERENCES ARTISTA(NOMEARTISTICO)
+) ENGINE=InnoDB;
+
+-- Tabela Video_Artista
+CREATE TABLE VIDEO_ARTISTA(
+	VIDEO   INT UNSIGNED NOT NULL,
+	ARTISTA VARCHAR(40)  NOT NULL,
+	TIPO    VARCHAR(20)  NOT NULL,
+
+	PRIMARY KEY(VIDEO, ARTISTA, TIPO),
+	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID),
+	FOREIGN KEY(ARTISTA, TIPO) REFERENCES ARTISTA_TIPO(ARTISTA, TIPO)
+) ENGINE=InnoDB;
+
+-- Tabela Post
+CREATE TABLE POST(
+	ID                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	DATAHORA          DATETIME     NOT NULL,
+	USUARIO           VARCHAR(20)  NOT NULL,
+	TITULO            VARCHAR(40)  NOT NULL,
+	CATEGORIA         VARCHAR(40),
+	PUBLICO           CHAR(1)      DEFAULT 'n', -- marca se o post por ser visto por outros usuários 'n' - nao e 'y' - sim
+	CONTEUDO          TEXT         NOT NULL,
+	COMPARTILHAMENTOS INT UNSIGNED DEFAULT 0, -- quando se cria um post, ele não tem nenhum compartilhamento
+
+	PRIMARY KEY(ID),
+	UNIQUE(DATAHORA, USUARIO),
+	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
+
+	CHECK(PUBLICO IN ('n', 'y'))
+) ENGINE=InnoDB;
+
+-- Tabela Compartilhamentos
+-- Quando um usuario faz um compartilhamento de um post a aplicação encarrega-se de incrementar o numero de compartilhamentos do respectivo post
+CREATE TABLE COMPARTILHAMENTO(
+	USUARIO  VARCHAR(20)  NOT NULL,
+	POST     INT UNSIGNED NOT NULL,
+	DATAHORA DATETIME     NOT NULL,
+
+	PRIMARY KEY(USUARIO, POST),
+	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
+	FOREIGN KEY(POST) REFERENCES POST(ID)
+) ENGINE=InnoDB;
+
+-- Tabela CartaoCredito
+CREATE TABLE CARTAOCREDITO(
+	NUMERO   VARCHAR(20) NOT NULL,
+	EMPRESA  VARCHAR(40) NOT NULL,
+	NOME     VARCHAR(40) NOT NULL,
+	VALIDADE DATE        NOT NULL,
+	USUARIO  VARCHAR(20) NOT NULL,
+
+	PRIMARY KEY(NUMERO, EMPRESA),
+	UNIQUE(USUARIO),
+	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO)
+) ENGINE=InnoDB;
+
+-- Tabela Compra
+CREATE TABLE COMPRA(
+	NF            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	DATAHORA      DATETIME     NOT NULL,
+	PRECOTOTAL    DECIMAL(5,2) NOT NULL,
+	QTDE          SMALLINT     NOT NULL,
+	CARTAONUMERO  VARCHAR(20)  NOT NULL,
+	CARTAOEMPRESA VARCHAR(40)  NOT NULL,
+
+	PRIMARY KEY(NF),
+	FOREIGN KEY(CARTAONUMERO, CARTAOEMPRESA) REFERENCES CARTAOCREDITO(NUMERO, EMPRESA)
+) ENGINE=InnoDB;
+
+-- Tabela Compra_Video
+CREATE TABLE COMPRA_VIDEO(
+	NF    INT UNSIGNED NOT NULL,
+	VIDEO INT UNSIGNED NOT NULL,
+
+	PRIMARY KEY(NF, VIDEO),
+	FOREIGN KEY(NF) REFERENCES COMPRA(NF),
+	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
+) ENGINE=InnoDB;
+
+-- Tabela Lista
+CREATE TABLE LISTA(
+	ID       INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	DATAHORA DATETIME     NOT NULL,
+	USUARIO  VARCHAR(20)  NOT NULL,
+	TIPO     CHAR(1)      DEFAULT 'p', -- 'p' playlist, 'w' wishlist
+	NOME     VARCHAR(40),
+	PUBLICO  CHAR(1)      DEFAULT 'n', -- marca se a lista pode ser vista por outros usuários 'n' - nao e 'y' sim
+
+	PRIMARY KEY(ID),
+	UNIQUE(DATAHORA, USUARIO),
+	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
+	CHECK(TIPO IN ('p', 'w')),
+	CHECK(PUBLICO IN ('n', 'y'))
+) ENGINE=InnoDB;
+
+-- Tabela Lista_Video
+CREATE TABLE LISTA_VIDEO(
+	LISTA INT UNSIGNED NOT NULL,
+	VIDEO INT UNSIGNED NOT NULL,
+
+	PRIMARY KEY(LISTA, VIDEO),
+	FOREIGN KEY(LISTA) REFERENCES LISTA(ID),
+	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
+) ENGINE=InnoDB;
+
+-- Tabela Assistido
+CREATE TABLE ASSISTIDO(
+	USUARIO  VARCHAR(20)  NOT NULL,
+	VIDEO    INT UNSIGNED NOT NULL,
+	DATAHORA DATETIME     NOT NULL,
+	PERIODO  VARCHAR(40)  NOT NULL,
+
+	PRIMARY KEY(USUARIO, VIDEO, DATAHORA),
+	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
+	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
+) ENGINE=InnoDB;
+
+COMMIT;
+
+-- Inserção de tuplas iniciais nas tabelas
+
+INSERT INTO USUARIO(NOMEUSUARIO, SENHA, NOMECOMPLETO, DATANASC, EMAIL, STATUS) VALUES
+('joao',  'nohash0', 'João da Silva',  '1993-06-10', 'joao@example.com',  DEFAULT),
+('maria', 'nohash1', 'Maria da Selva', '1991-07-01', 'selva@example.com', DEFAULT);
+COMMIT;
+
+INSERT INTO VIDEO(ID, TITULOORIGINAL, ANOLANCAMENTO, DISTRIBUIDORA, LICENCA, TITULOPT, GENERO, CLASSEETARIA, DURACAO, TAMANHO, AVALIACAO, SINOPSE, TRAILER, RESOLUCAO, AUDIO, LEGENDA, PRECO, TIPO) VALUES
+(1, 'The Silence of the Lambs', 1991, 'Orion Pictures', 'all', 'O Silêncio dos Inocentes', 'suspense', 18, 118, 3200, NULL, NULL, NULL, 'full hd', 'en', 'pt-br', 9.00, 'f'),
+(2, 'The Lord of the Rings: The Fellowship of', 2001, 'New Line Cinema', 'all', 'O Senhor dos Anéis: A Sociedade do Anel', 'Fantasia', 14, 178, 5100, NULL, NULL, NULL, 'full hd', 'en', 'pt-br', 10.00, 'f'),
+(3, 'Breaking Bad', 2008, 'AXN', 'all', 'Breaking Bad: A Química do Mal', 'drama', 18, 47, 1000, NULL, NULL, NULL, 'full hd', 'en', 'pt-br', 3.00, 's');
+COMMIT;
+
+INSERT INTO SERIE(NOMEEPISODIO, NUMEPISODIO, TEMPORADA, VIDEO) VALUES
+('Pilot', 1, 1, 3),
+('Cat\'s in the Bag...', 2, 1, 3);
+COMMIT;
+
+INSERT INTO VIDEO_PREMIACAO(VIDEO, PREMIACAO) VALUES
+(2, 'Oscar'),
+(2, 'BAFTA');
+COMMIT;
+
+INSERT INTO AVALIACAO(USUARIO, VIDEO, REVIEW, NOTA) VALUES
+('joao', 2, NULL, 10.0),
+('maria', 2, NULL, 5.0);
+COMMIT;
+
+INSERT INTO CONTATO(USUARIOA, USUARIOB, DATAHORA) VALUES
+('joao', 'maria', '2014-06-01 11:00:00'),
+('maria', 'joao', '2014-06-02 11:00:00');
+COMMIT;
+
+INSERT INTO CHAT(USUARIOA, USUARIOB, DATAHORA, CONTEUDO, DATAVISTO) VALUES
+('joao', 'maria', '2014-06-03 10:00:00', 'Oi, como vai?', '2014-06-03 10:00:01'),
+('maria', 'joao', '2014-06-03 10:00:01', 'Bem, e você?', NULL);
+COMMIT;
+
+INSERT INTO ARTISTA(NOMEARTISTICO, NOME) VALUES
+('Elijah Wood', NULL),
+('Ian McKellen', NULL);
+COMMIT;
+
+INSERT INTO ARTISTA_TIPO(ARTISTA, TIPO) VALUES
+('Elijah Wood', 'ator'),
+('Ian McKellen', 'ator');
+COMMIT;
+
+INSERT INTO VIDEO_ARTISTA(VIDEO, ARTISTA, TIPO) VALUES
+(2, 'Elijah Wood', 'ator'),
+(2, 'Ian McKellen', 'ator');
+COMMIT;
+
+INSERT INTO POST(ID, DATAHORA, USUARIO, TITULO, CATEGORIA, PUBLICO, CONTEUDO, COMPARTILHAMENTOS) VALUES
+(1, '2014-06-20 10:57:00', 'joao', 'S2 LOTR S2', NULL, 'y', 'Eu amo Senhor dos Anéis <3\n', DEFAULT),
+(2, '2014-06-20 11:00:00', 'maria', 'Elfos', NULL, 'y', 'Queria ser um elfo :3\n', DEFAULT);
+COMMIT;
+
+INSERT INTO COMPARTILHAMENTO(USUARIO, POST, DATAHORA) VALUES
+('joao', 2, '2014-06-20 11:10:00'),
+('maria', 1, '2014-06-20 11:00:00');
+COMMIT;
+
+INSERT INTO CARTAOCREDITO(NUMERO, EMPRESA, NOME, VALIDADE, USUARIO) VALUES
+('123456789', 'Itau', 'Joao da Silva', '2016-06-00', 'joao'),
+('123456780', 'Bradesco', 'Maria da Selva', '2018-06-00', 'maria');
+COMMIT;
+
+INSERT INTO COMPRA(NF, DATAHORA, PRECOTOTAL, QTDE, CARTAONUMERO, CARTAOEMPRESA) VALUES
+(1, '2014-06-01 07:00:00', '10.0', 1, '123456789', 'Itau'),
+(2, '2014-06-01 07:00:00', '10.0', 1, '123456780', 'Bradesco');
+COMMIT;
+
+INSERT INTO COMPRA_VIDEO(NF, VIDEO) VALUES
+(1, 2),
+(2, 2);
+COMMIT;
+
+INSERT INTO LISTA(ID, DATAHORA, USUARIO, TIPO, NOME, PUBLICO) VALUES
+(1, '2014-06-02 03:00:00', 'joao', DEFAULT, 'Meus vídeos', DEFAULT),
+(2, '2014-06-02 23:00:00', 'maria', DEFAULT, 'Meus vídeos', DEFAULT);
+COMMIT;
+
+INSERT INTO LISTA_VIDEO(LISTA, VIDEO) VALUES
+(1, 2),
+(2, 2);
+COMMIT;
+
+INSERT INTO ASSISTIDO(USUARIO, VIDEO, DATAHORA, PERIODO) VALUES
+('joao', 2, '2014-06-03 10:00:00', 'integral'),
+('joao', 2, '2014-06-04 09:30:00', 'integral'),
+('maria', 2, '2014-06-03 11:10:00', 'integral'),
+('maria', 2, '2014-06-04 05:30:00', 'integral');
+COMMIT;
+
+/*
+-- Ordem correta para dar drop em tudo e eliminar a base de dados
+-- Não faz parte do script de criação, somente para debug interno
+DROP TABLE ASSISTIDO;
+DROP TABLE LISTA_VIDEO;
+DROP TABLE LISTA;
+DROP TABLE COMPRA_VIDEO;
+DROP TABLE COMPRA;
+DROP TABLE CARTAOCREDITO;
+DROP TABLE COMPARTILHAMENTO;
+DROP TABLE POST;
+DROP TABLE VIDEO_ARTISTA;
+DROP TABLE ARTISTA_TIPO;
+DROP TABLE ARTISTA;
+DROP TABLE CHAT;
+DROP TABLE CONTATO;
+DROP TABLE AVALIACAO;
+DROP TABLE VIDEO_PREMIACAO;
+DROP TABLE SERIE;
+DROP TABLE VIDEO;
+DROP TABLE USUARIO;
+*/

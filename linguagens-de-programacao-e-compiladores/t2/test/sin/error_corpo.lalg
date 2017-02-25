@@ -1,0 +1,4 @@
+{ Esquece o end no corpo do programa }
+program oi;
+begin
+	a := 10;

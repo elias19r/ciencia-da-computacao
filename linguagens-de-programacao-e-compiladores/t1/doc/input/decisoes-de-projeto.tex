@@ -1,0 +1,100 @@
+\section{Decisões de Projeto \label{sec:decisoes-de-projeto}}
+
+\subsection{\textit{Tokens}}
+
+Para catalogar os \textit{tokens}, foi decido o formato \textless\texttt{token, simbolo\char`_token}\textgreater. Os símbolos foram definidos conforme mostra a Tabela~\ref{tab:tokens}.
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{|c||l|l|} 
+		\hline
+		\textbf{\textit{Token}}      & \textbf{Símbolo}   & \textbf{Descrição}\\
+		\hline
+		\texttt{:}                   & \texttt{COLON}     & dois-pontos\\
+		\texttt{;}                   & \texttt{SEMICOLON} & ponto-e-vírgula\\
+		\texttt{.}                   & \texttt{DOT}       & ponto\\
+		\texttt{,}                   & \texttt{COMMA}     & vírgula\\
+		\texttt{(}                   & \texttt{OPAR}      & abre parênteses\\
+		\texttt{)}                   & \texttt{CPAR}      & fecha parênteses\\
+		\texttt{:=}                  & \texttt{ATR}       & atribuição\\
+		\texttt{>=}                  & \texttt{GOE}       & maior ou igual\\
+		\texttt{<=}                  & \texttt{LOE}       & menor ou igual\\
+		\texttt{<>}                  & \texttt{DIFFERENT} & diferente\\
+		\texttt{=}                   & \texttt{EQUAL}     & igual\\
+		\texttt{>}                   & \texttt{GR}        & maior\\
+		\texttt{<}                   & \texttt{LE}        & menor\\
+		\texttt{+}                   & \texttt{PLUS}      & adição\\
+		\texttt{-}                   & \texttt{MINUS}     & subtração\\
+		\texttt{*}                   & \texttt{MULT}      & multiplicação\\
+		\texttt{/}                   & \texttt{DIV}       & divisão\\
+		\texttt{<ident>}             & \texttt{IDENT}     & identificador\\
+		\texttt{<numero\char`_int>}  & \texttt{INTEGER}   & número inteiro\\
+		\texttt{<numero\char`_real>} & \texttt{REAL}      & número real\\
+		\texttt{<char>}              & \texttt{CHAR}      & caractere entre \texttt{\textquotesingle} escapado ou não com \texttt{\char`\\}\\
+		\texttt{<reservado>}         & \texttt{RESERVED}  & qualquer palavra reservada\\
+		\texttt{<desconhecido>}      & \texttt{UNKNOWN}   & um token desconhecido\\
+		\hline
+	\end{tabular}
+	\caption{Descrição dos símbolos adotados para os \textit{tokens}. \indent Observação: os \textit{tokens} \texttt{<reservado>} e \texttt{<desconhecido>} não fazem parte da gramática \texttt{LALG} em si, mas foram definidos apenas para documentação, pois foram usados na implementação\label{tab:tokens}.}
+\end{center}
+\end{table}
+
+\subsection{Palavras Reservadas}
+
+Para catalogar as palavras reservadas, foi decido o formato\\ \textless\texttt{palavra\char`_reservada, palavra\char`_reservada}\textgreater. Segue a lista de palavras reservadas definidas:
+
+\texttt{begin}, \texttt{char}, \texttt{const}, \texttt{do}, \texttt{else}, \texttt{end}, \texttt{for}, \texttt{function}, \texttt{if}, \texttt{integer}, \texttt{procedure}, \texttt{program}, \texttt{read}, \texttt{real}, \texttt{repeat}, \texttt{then}, \texttt{to}, \texttt{until}, \texttt{var}, \texttt{while}, \texttt{write}	
+
+A tabela de palavras reservadas foi descrita diretamente no código-fonte (\textit{hard-coded}) para melhor desempenho e em ordem alfabética. Mais informações estão documentadas no arquivo \texttt{./src/main.c}.
+
+Para conferir se um \textit{token} casado como \texttt{IDENT} é ou não uma palavra reservada, foi criada uma função que faz \textbf{busca binária} sobre a tabela de palavras reservadas. Devido à pequena quantidade de palavras reservadas, 21, esse método é satisfatório em sua eficiência que é $O(\log_221)$ no pior caso.
+
+\subsection{Erros Léxicos}
+
+Os códigos para os possíveis erros léxicos foram definidos como mostra a Tabela~\ref{tab:erros}. Também foram definidos comprimentos máximos para alguns \textit{tokens} listados na Tabela~\ref{tab:comprimentos}.
+
+Usou-se \textbf{código} \texttt{C} para os erros referentes a comprimento e \textbf{expressões regulares} no próprio \texttt{Lex} \texttt{./src/lalg.l} para casar os erros referentes a má formação.
+
+Para cada \textit{token} lido pela função que faz a análise léxica, ele é impresso na saída padrão \texttt{stdout} juntamente com informações descritivas dos erros ocorridos.
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{|l||l|} 
+		\hline
+		\textbf{Código}                        & \textbf{Descrição}\\
+		\hline
+		\texttt{SUCCESS}                       &       nenhum erro\\
+		\texttt{ERR\char`_BAD\char`_IDENT}     & idenfiticador mal formado\\
+		\texttt{ERR\char`_MAX\char`_IDENT}     & idenfiticador muito grande\\
+		\texttt{ERR\char`_BAD\char`_INTEGER}   & numero inteiro mal formado\\
+		\texttt{ERR\char`_MAX\char`_INTEGER}   & numero inteiro muito grande\\
+		\texttt{ERR\char`_BAD\char`_REAL}      & numero real mal formado\\
+		\texttt{ERR\char`_MAX\char`_REAL}      & numero real muito grande\\
+		\texttt{ERR\char`_BAD\char`_CHAR}      & caractere mal formado\\
+		\texttt{ERR\char`_MAX\char`_CHAR}      & caractere muito grande\\
+		\texttt{ERR\char`_CHAR\char`_EMPTY}    & caractere vazio\\
+		\texttt{ERR\char`_CHAR\char`_BREAK}    & caractere nao inline\\
+		\texttt{ERR\char`_CHAR\char`_OPEN}     & caractere nao fechado\\
+		\texttt{ERR\char`_COMMENT\char`_BREAK} & comentario nao inline\\
+		\texttt{ERR\char`_COMMENT\char`_OPEN}  & comentraio nao fechado\\
+		\texttt{ERR\char`_UNKNOWN}             &    token desconhecido\\
+		\hline
+	\end{tabular}
+	\caption{Descrição dos códigos de erro adotados\label{tab:erros}.}
+\end{center}
+\end{table}
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{|l||c|l|} 
+		\hline
+		\textbf{Código}                     & \textbf{Valor}  & \textbf{\textit{Token}}\\
+		\hline
+	\texttt{MAX\char`_LENGTH\char`_IDENT}   & 13      & \texttt{<ident>}\\
+	\texttt{MAX\char`_LENGTH\char`_INTEGER} & 13      & \texttt{<numero\char`_int>}\\
+	\texttt{MAX\char`_LENGTH\char`_REAL}    & 13      & \texttt{<numero\char`_real>}\\
+		\hline
+	\end{tabular}
+	\caption{Comprimentos máximos definidos para alguns \textit{tokens}\label{tab:comprimentos}.}
+\end{center}
+\end{table}

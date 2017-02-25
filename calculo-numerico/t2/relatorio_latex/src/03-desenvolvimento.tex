@@ -1,0 +1,216 @@
+\section{Desenvolvimento}
+
+\subsection{Transformação}
+
+Antes de ser implementado no código, o PVI de segunda ordem a ser resolvido foi transformado no seguinte sistema
+de equações seguindo as transformações mostradas na seção 1:
+\[
+	\left \{
+		\begin{array}{lll}
+			\mathbf{y}'   & = & \mathbf{F}(x, \mathbf{y}) \text{ , } 0 \leq x \leq 2 \\
+			\mathbf{y}(0) & = & \mathbf{y}_{0}
+		\end{array}
+	\right .
+\]
+
+onde,
+\[
+	\mathbf{y} = 
+	\begin{bmatrix}
+		y_1(x) \\
+		y_2(x) \\
+	\end{bmatrix}
+	\text{ , }
+	\mathbf{y}' =
+	\begin{bmatrix}
+		y'_1(x) \\
+		y'_2(x) \\
+	\end{bmatrix}
+	\text{ , }
+	\mathbf{F}(x, \mathbf{y}) =
+	\begin{bmatrix}
+		y_2(x) \\
+		y_1(x) + e^x
+	\end{bmatrix}
+	\text{ e }
+	\mathbf{y}(0) =
+	\begin{bmatrix}
+		y_1(0) \\
+		y_2(0) \\
+	\end{bmatrix} =
+	\mathbf{y}_0 =
+	\begin{bmatrix}
+		1 \\
+		0 \\
+	\end{bmatrix}
+\]
+
+\subsection{Implementação}
+
+O programa foi desenvolvido em linguagem \texttt{C} em sistema operacional \texttt{Linux}.
+Além das bibliotecas convencionais \texttt{stdlib.h} e \texttt{stdio.h}, foi utilizada também
+a \texttt{math.h} para usar a função \texttt{log()} que retorna o valor do logaritmo natural de um
+numero, \texttt{exp()} que retorna o valor da exponencial $e$ elevado a
+um número e \texttt{sqrt()} que retorna a raiz quadrada de um número real.
+
+Para representar os números reais no programa foi utilizado o tipo de dado de ponto flutuante \texttt{double} que é próprio da linguagem \texttt{C}.
+
+O código do programa consiste nas seguintes funções:
+\begin{itemize}
+	\item \verb|int main(int argc, char **argv)|\\
+	Função principal do programa que é responsável por iterar $k$ vezes a função \texttt{calcular()}.
+
+	\item \verb|double euler_mod(double x, double h)|\\
+	Retorna o valor da solução de Euler Modificado para um dado \texttt{x} e considerando intervalo de tamanho \texttt{h}.
+	
+	\item \verb|double analitica(double x)|\\
+	Retorna o valor da solução analítica para um dado \texttt{x}.
+
+	\item \verb|void calcular(int k)|\\
+	Efetua os cálculos iterativos chamando as devidas funções e imprime o resultado na tela.
+\end{itemize}
+
+O vetores com os valores do PVI e com os valores dos erros foram criados globais e estão declarados e documentados
+no começo do código-fonte.
+
+\subsection{Código-fonte}
+
+\texttt{main.c}
+\begin{lstlisting}
+/**
+ * Elias Italiano Rodrigues, 7987251
+ *
+ * SME0104 Calculo Numerico: Trabalho 2
+ * 2014/06/24
+ */
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+// Vetores do PVI
+double   y[2] = {1.0, 0.0}; // solucao
+double   F[2] = {0.0, 0.0}; // F
+double  _F[2] = {0.0, 0.0}; // F calculado com y barra
+double  _y[2] = {0.0, 0.0}; // y barra
+
+// Erros
+double erros[4][3] = {
+// resultado, soma do numerador, soma do denominador
+	{0.0, 0.0, 0.0},
+	{0.0, 0.0, 0.0},
+	{0.0, 0.0, 0.0},
+	{0.0, 0.0, 0.0}
+};
+
+/**
+ * Resposta da solucao de Euler Modificado para um dado x
+ * e considerando intervalo de tamanho h
+ */
+double euler_mod(double x, double h)
+{
+	// Passo 1
+	F[0] = y[1];
+	F[1] = y[0] + exp(x - h);
+	
+	// Passo 2
+	_y[0] = y[0] + h * F[0];
+	_y[1] = y[1] + h * F[1];
+	
+	// Passo 3
+	_F[0] = _y[1];
+	_F[1] = _y[0] + exp(x);
+	
+	// Passo 4
+	y[0] = y[0] + (h * (F[0] + _F[0])) / 2.0;
+	y[1] = y[1] + (h * (F[1] + _F[1])) / 2.0;
+	
+	return y[0];
+}
+
+/**
+ * Resposta da solucao analitica para um dado x
+ */
+double analitica(double x)
+{
+	return 0.25 * (exp(x) * (1.0 + 2.0 * x) + 3.0 * exp(-x));
+}
+
+/**
+ * Efetua todos os calculos iterativos chamando as devidas funcoes
+ * e imprime os resultados na tela
+ */
+void calcular(int k)
+{
+	int j;
+	double h = 0.2 / pow(2.0, (double)k); // calcula h
+	int N = (int)(2.0 / h); // calcula N
+	double x, res1, res2;
+	
+	// Reseta os valores
+	y[0] = 1.0;
+	y[1] = 0.0;
+	
+	printf("\n Resultados para k = %d\n", k);
+	printf("---------------------------------\n");
+	printf(" x          Euler      Analitica\n");
+	printf("---------------------------------\n");
+	// Iterando em cada um dos pontos
+	for (j = 0; j <  N + 2; j++) {
+		// Obtem valores
+		x = (double)j * h;
+		res1 = j > 0 ? euler_mod(x, h) : y[0];
+		res2 = analitica(x);
+
+		// Imprime		
+		printf(" %lf   %lf   %lf\n", x, res1, res2);
+		
+		// Acumula erros
+		erros[k-1][1] += pow(res2 - res1, 2.0);
+		erros[k-1][2] += pow(res2, 2.0);
+	}
+
+	// Calcula e imprime o erro relativo
+	erros[k-1][0] = sqrt(erros[k-1][1] / erros[k-1][2]);
+	printf("---------------------------------\n");
+	printf(" Erro relativo: %lf\n", erros[k-1][0]);
+	printf("---------------------------------\n");
+}
+
+/**
+ * Programa principal
+ */
+int main(int argc, char **argv)
+{
+	int k;
+	
+	// Imprimindo informacoes do problema
+	printf("SME0104 Calculo Numerico\nTrabalho 2: Metodo de Euler Modificado\n\n");
+	printf(" EDO alvo : y'' = y + e^x\n");
+	printf("Intervalo : x em [0,2]\n");
+	printf("  Valores : y(0) = 1 e y'(0) = 0\n");
+	
+	// Resultados para k = 1, 2, 3, 4
+	for (k = 1; k < 5; k++)
+		calcular(k);
+	
+	// Ordens de convergencia
+	printf("\n k   Convergencia\n");
+	printf("------------------\n");
+	for (k = 0; k < 3; k++)
+		printf(" %d   %lf\n", k + 1, log(erros[k][0] / erros[k+1][0]) / log(2.0));
+
+	return EXIT_SUCCESS;
+}
+\end{lstlisting}
+
+\subsection{Compilação e Execução}
+
+Para compilar o código-fonte foi utilizado o \texttt{gcc} (GNU project C and C++ compiler):\\
+\indent\verb|gcc -o t2_euler-mod main.c -lm|
+
+A execução do programa, se este estiver no diretório atual, dá-se por:\\
+\indent\verb|./t2_euler-mod|
+
+O programa não pede por dados de entrada.
+
+\newpage

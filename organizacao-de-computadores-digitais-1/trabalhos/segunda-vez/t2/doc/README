@@ -1,0 +1,19 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+SSC0112 Organizacao de Computadores Digitais I
+
+Trabalho 2: Analise de Desempenho de Memoria Cache
+ 
+Carlos Humberto 7987456
+Elias Rodrigues 7987251
+Ricardo Fukuda  7986729
+
+2015-12-03
+
+
+Este diretorio contem os arquivos em LaTeX da monografia.
+
+O main.tex eh o arquivo principal e usa os arquivos do diretorio ./input.
+
+Para editar e compilar eh recomendavel usar o editor Texmaker definindo o
+main.tex como arquivo principal.

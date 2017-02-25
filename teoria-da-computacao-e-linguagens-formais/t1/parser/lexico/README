@@ -1,0 +1,24 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+SCC0205 Teoria da Computacao e Linguagens Formais
+Trabalho 1 - Analisador Lexico e Sintatico para Linguagem AWK
+
+Elias Italiano Rodrigues         7987251
+Gabriel Tessaroli Giancristofaro 4321350
+Paulo Augusto de Godoy Patire    7987060
+
+==================================================
+
+Para compilar, execute:
+	make
+
+Para rodar lendo um programa awk do teclado, execute:
+	make run
+
+Para rodar lendo um programa awk a partir de um arquivo, execute
+	make run < program.awk
+
+Para limpar arquivos gerados na compilacao, execute:
+	make clean
+

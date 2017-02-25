@@ -1,0 +1,14 @@
+{ 'repeat' sem 'until' }
+program oi;
+
+	const c = 10;
+	var a, b: integer;
+	var w: char;
+
+begin
+	read(a);
+
+	repeat
+		a := a + 1;
+
+end.

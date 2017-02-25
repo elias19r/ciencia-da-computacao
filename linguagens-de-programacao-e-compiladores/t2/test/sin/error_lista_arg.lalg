@@ -1,0 +1,20 @@
+{ Esqueceu argumentos para o procedimento e funcao (na chamada deles) }
+program oi;
+
+	const c = 10;
+	var a, b: integer;
+
+	procedure meu_proc(v: integer; x: real);
+	var contador: integer;
+	begin
+		contador := contador + v;
+		write(contador);
+		write(x);
+	end;
+
+	function minha_func(v: integer; x: real) : integer;
+
+begin
+	minha_func(); { erro aqui }
+	meu_proc(); { erro aqui }
+end.

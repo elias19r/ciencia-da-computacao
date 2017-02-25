@@ -1,0 +1,20 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+SSC0112 Organizacao de Computadores Digitais I
+
+Trabalho 1: Conversor de Base
+ 
+Carlos Humberto 7987456
+Elias Rodrigues 7987251
+Ricardo Fukuda  7986729
+
+2015-10-07
+
+NOTE: como a arquitetura do ICMC trabalha somente com valores de 16 bits,
+esta implementacao suporta somente valores ate 16 bits, i.e. [0, 65535].
+
+NOTE: o programa suporta tanto caracteres maiusculos como minusculos para
+a base hexadecimal e para as letras da base.
+
+NOTE: os casos de testes foram registrados com screenshots do simulador e
+encontram-se no diretorio "./testes".

@@ -1,0 +1,6 @@
+{ Esqueceu 'const' }
+program oi;
+c = 10;
+begin
+	a := c;
+end.

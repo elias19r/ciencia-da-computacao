@@ -1,0 +1,6 @@
+{ readd e' um IDENT nao palavra reservada }
+program ident_test;
+var a: integer;
+begin
+	readd(a);
+end.

@@ -1,0 +1,67 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+Trabalho 3: Smooth
+
+SSC0143 Programacao Concorrente
+
+Elias Italiano Rodrigues 7987251
+Rodolfo Megiato de Lima  7987286
+Vinicius Katata Biondo   6783972
+
+--------------------------------------------------
+ O Trabalho
+--------------------------------------------------
+
+Este trabalho implementa o algoritmo smooth para remover ruidos
+em uma imagem do tipo PPM P3. Esse formato de imagem e' representado
+por um arquivo ASCII contendo um cabecalho com os valores de largura
+e altura, e o restante do arquivo com os valores RGB de cada pixel.
+
+O algoritmo smooth implementado consiste em calcular o valor de um
+pixel central em uma area de 5x5 pixels. Para isso e' feita a media
+aritmetica dos valores de todos pixels dessa area e atribuido essa
+media ao pixel central.
+
+--------------------------------------------------
+ Como usar os programas
+--------------------------------------------------
+
+Para compilar todos programas, execute:
+	make
+
+Para rodar a versao sequencial, execute:
+	./bin/sequential < in.ppm > out.ppm
+	
+Para rodar a versao paralela MPI, execute:
+	mpirun -hostfile ./hosts -np <#> -npernode <#pernode> ./bin/parallel < in.ppm > out.ppm
+Por exemplo
+	mpirun -hostfile ./hosts -np 8 -npernode 2 ./bin/parallel < in.ppm > out.ppm
+
+Para rodar a versao CUDA, execute:
+	./bin/cuda < in.ppm > out.ppm
+
+Opcionalmente, os programas podem receber os seguintes argumentos:
+	--no-output ou -n para nao gerar a saida
+	--time ou -t para imprimir o tempo em segundos gasto somente com o processamento
+
+Para limpar todos os arquivos compilados, execute:
+	make clean
+
+Para rodar varios testes paralelo, sequencial ou cuda, execute:
+	./run.sh <program> <#> <#pernode> <file> <#times>
+Exemplos:
+	./run.sh parallel 8 2 in.ppm 10
+	./run.sh sequential - - in.ppm 10
+	./run.sh cuda - - in.ppm 10
+
+Para conferir por vazamento de memoria, execute:
+	make memcheck
+
+--------------------------------------------------
+ Problemas?
+--------------------------------------------------
+
+Caso nao consiga compilar e rodar os programas, confira por dependencias
+de uma biblioteca MPI e CUDA, assim como dos programas usados "make", "gcc" e "valgrind".
+

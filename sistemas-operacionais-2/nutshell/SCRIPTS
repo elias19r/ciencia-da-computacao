@@ -1,0 +1,1 @@
+while true; do ps uf; sleep 1; clear; done

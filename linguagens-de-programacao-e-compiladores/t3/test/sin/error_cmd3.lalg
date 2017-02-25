@@ -1,0 +1,14 @@
+{ Esqueceu sinal de atribuição ":=" }
+program oi;
+
+	const c = 10;
+	var a, b: integer;
+	var w: char;
+
+begin
+	read(a);
+
+	b := 1 - c / 10 * a;
+	b 1 - c / 10 * a ;
+
+end.

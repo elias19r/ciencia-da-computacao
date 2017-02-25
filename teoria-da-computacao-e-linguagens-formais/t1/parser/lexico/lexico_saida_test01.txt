@@ -1,0 +1,6 @@
+@(001,001)              PATTERN = BEGIN
+@(001,007)          BEGIN_CURLY = {
+@(002,009)                PRINT = print
+@(002,015)             CONSTANT = "3"
+@(002,018)              ENDLINE = ;
+@(003,001)            END_CURLY = }

@@ -1,0 +1,22 @@
+{ Outro programa lexicamente correto }
+program nome2;
+	var b: real;
+
+	procedure nomep(x: real);
+	var a, c: integer;
+	begin
+		read(c, a);
+		if a < x + c then
+		begin
+			a := c + x;
+			write(a);
+		end
+		else
+			c := a + x;
+	end;
+
+{ Corpo principal do programa }
+begin 
+	read(b);
+	nomep(b); { Chama procedimento definido }
+end.

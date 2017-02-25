@@ -1,0 +1,20 @@
+Disciplina:
+	Algoritmos Avancados e Aplicacoes, BCC, ICMC-USP
+	Professor Gustavo Batista
+
+Grupo do trabalho:
+	Elias Italiano Rodrigues, 7987251
+	Rodolfo Megiato de Lima,  7987286
+
+Para compilar:
+	make
+
+Para rodar:
+	make run
+
+Para mudar o caso de uso:
+	Altere nas primeiras linhas do arquivo Makefile
+
+Observacao:
+	Os arquivos de entrada e saida ficam no diretorio ./data
+

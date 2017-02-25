@@ -1,0 +1,18 @@
+Disciplina:
+	Sistemas Operacionais I, BCC, ICMC-USP
+	Professora Dra. Sarita Bruschi
+
+Grupo do trabalho:
+	Elias Italiano Rodrigues, 7987251
+	Gabriel Tessaroli Giancristofaro, 4321350
+	Rodolfo Megiato de Lima,  7987286
+
+Para compilar:
+	make
+
+Para rodar:
+	make run
+
+Para mudar o caso de uso:
+	Altere nas primeiras linhas do arquivo Makefile
+

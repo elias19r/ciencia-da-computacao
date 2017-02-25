@@ -1,0 +1,8 @@
+	tabela file1
+		codigo int order
+		nome char[80]
+		idade int
+		endereco char[50]
+		numero char[4]
+		cidade char[80]
+		estado char[2]

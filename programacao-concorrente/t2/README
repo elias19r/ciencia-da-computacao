@@ -1,0 +1,60 @@
+Universidade de Sao Paulo
+Instituto de Ciencias Matematicas e de Computacao
+
+Trabalho 2: Hospital em ICMCTown
+
+SSC0143 Programacao Concorrente
+
+Elias Italiano Rodrigues 7987251
+Rodolfo Megiato de Lima  7987286
+Vinicius Katata Biondo   6783972
+
+--------------------------------------------------
+ O Trabalho
+--------------------------------------------------
+
+Este trabalho implementa o algoritmo de Floyd-Warshall para resolver o
+problema de encontrar uma melhor localizacao para se instalar um
+hospital na cidade de ICMCTown, segundo o enunciado dado.
+
+--------------------------------------------------
+ Como usar os programas
+--------------------------------------------------
+
+Valores de entrada
+	#algoritmo : 0 para Dijkstra e 1 para Floyd-Warshall
+	#nthreads  : quantidade de threads desejada (so tem efeito para versao paralela)
+	#arquivo   : nome do arquivo de entrada
+	#vezes     : numero de vezes que os programas serao executados
+
+Para compilar todos programas, execute:
+	make
+
+Para rodar a versao sequencial, execute:
+	./bin/sequential #algoritmo < #arquivo
+Por exemplo:
+	./bin/sequential 0 < input01
+	
+Para rodar a versao paralela, execute:
+	./bin/parallel #algoritmo #nthreads < #arquivo
+Por exemplo:
+	./bin/parallel 0 4 < input01
+
+Para limpar todos os arquivos compilados, execute:
+	make clean
+
+Para rodar varios testes, paralelo e sequencial, execute:
+	./run.sh #algoritmo #nthreads #arquivo #vezes
+Por exemplo:
+	./run.sh 0 4 input01 10
+
+Para conferir por vazamento de memoria, execute:
+	make memcheck ALG=#algoritmo
+
+--------------------------------------------------
+ Problemas?
+--------------------------------------------------
+
+Caso nao consiga compilar e rodar os programas, confira por dependencias
+da OpenMP, assim como dos programas usados "make", "gcc" e "valgrind".
+

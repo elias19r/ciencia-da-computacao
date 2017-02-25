@@ -1,0 +1,25 @@
+create table pessoa(codigo int, nome char[80], idade int, sexo char ); 
+create   table   empresa   (razaosocial   char[255],   endereco   char[255],   numero   int,   cidade 
+char[80], estado char[2]); 
+showalltables 
+insert into pessoa (codigo, nome, idade, sexo) values (1, 'joao da silva', 10, 'M'); 
+insert into pessoa (codigo, nome, idade, sexo) values (2, 'paula souza', 11, 'F'); 
+insert into pessoa (codigo, nome, idade, sexo) values (3, 'jose ricardo martins', 90, 'M'); 
+insert   into   empresa   (razaosocial,   endereco,   numero,   cidade,   estado)   values   ('Usp',   'Av 
+Trabalhador Saocarlense', 400, 'Sao Carlos', 'SP'); 
+insert into empresa (razaosocial, endereco, numero, cidade, estado) values ('Empresa A', 'Av 
+Sao Carlos', 30, 'Sao Carlos', 'SP'); 
+insert into empresa (razaosocial, endereco, numero, cidade, estado) values ('Empresa B', 'Av 
+XV', 132, 'Araraquara', 'SP'); 
+create index pessoa(codigo); 
+create index pessoa(nome); 
+create index empresa            (razaosocial); 
+create index empresa(cidade); 
+statistics 
+insert into pessoa(codigo, nome, idade, sexo) values (4, 'carlos almeida', 123, 'M'); 
+insert into pessoa       (codigo, nome, idade, sexo) values (2, 'joaquim jose', 123, 'M'); 
+select pessoa codigo '3'; 
+statistics 
+sort pessoa(codigo);
+sort pessoa(nome);
+

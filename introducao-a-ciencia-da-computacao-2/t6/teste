@@ -1,0 +1,21 @@
+void imprimir(GrupoPacientes *gruposPacientes, int G) {
+	int i, j;
+	
+	printf("Imprindo Grupos de Pacientes\n");
+	for (i = 0; i < G; i++) {
+		printf("\tGrupo %d (%.1f)\n", i+1, gruposPacientes[i].T);
+		for (j = 0; j < gruposPacientes[i].N; j++) {
+			printf("\t\t%s : %d : %.1f | %.1f | %.1f\n", gruposPacientes[i].pacientes[j].nome, gruposPacientes[i].pacientes[j].cor, gruposPacientes[i].pacientes[j].chegada, gruposPacientes[i].pacientes[j].atendimento, gruposPacientes[i].pacientes[j].estimado);
+		}
+	}
+}
+
+void imprimirFila(Fila fila) {
+	int i;
+	
+	printf("Imprindo FILA\n");
+	for (i = 0; i < fila.F; i++) {
+		printf("%d ", fila.itens[i].paciente->cor);
+	}
+	printf("\n");
+}

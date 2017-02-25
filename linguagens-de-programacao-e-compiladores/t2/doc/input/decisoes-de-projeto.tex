@@ -1,0 +1,68 @@
+\section{Decisões de Projeto \label{sec:decisoes-de-projeto}}
+
+\subsection{Mudanças em relação ao trabalho anterior}
+
+As seguintes mudanças foram feitas em relação ao trabalho anterior:
+
+\begin{itemize}
+
+	\item Para facilitar o processo de compilação e linkagem, os diretórios \texttt{./bin} e \texttt{./src} foram removidos e agora os arquivos \texttt{.y}, \texttt{.l}, \texttt{.h} e \texttt{.c} encontram-se todos no diretório raiz do trabalho.
+
+\newpage
+	\item Optou-se por mudar a implementação do léxico de \texttt{<palavra\char`_reservada, palavra\char`_reservada>} para \texttt{<palavra\char`_reservada, simbolo\char`_palavra\char`_reservada>} devido a maior facilidade ao trabalhar no \texttt{Bison}. Confira a Tabela~\ref{tab:sim_reservada}.
+
+	\item A busca para conferir se um identificador é uma palavra reservada agora é feita no \texttt{lalg.l}.
+
+	\item Os símbolos dos \textit{tokens} foram movidos do arquivo \texttt{lalg.l} para o arquivo \texttt{lalg.y}.
+
+	\item Removeu-se o ``pseudo-token" \texttt{ RESERVED} criado somente para auxiliar na implementação.
+
+\end{itemize}
+
+\begin{table}[h]
+\begin{center}
+	\begin{tabular}{|l|l|} 
+		\hline
+		\textbf{Palavra Reservada} & \textbf{Símbolo}\\
+		\hline
+		\texttt{begin}     &  \texttt{W\char`_BEGIN}\\
+		\texttt{char}      &  \texttt{W\char`_CHAR}\\
+		\texttt{const}     &  \texttt{W\char`_CONST}\\
+		\texttt{do}        &  \texttt{W\char`_DO}\\
+		\texttt{else}      &  \texttt{W\char`_ELSE}\\
+		\texttt{end}       &  \texttt{W\char`_END}\\
+		\texttt{for}       &  \texttt{W\char`_FOR}\\
+		\texttt{function } &  \texttt{W\char`_FUNCTION}\\
+		\texttt{if}        &  \texttt{W\char`_IF}\\
+		\texttt{integer}   &  \texttt{W\char`_INTEGER}\\
+		\texttt{procedure} &  \texttt{W\char`_PROCEDURE}\\
+		\texttt{program}   &  \texttt{W\char`_PROGRAM}\\
+		\texttt{read}      &  \texttt{W\char`_READ}\\
+		\texttt{real}      &  \texttt{W\char`_REAL}\\
+		\texttt{repeat}    &  \texttt{W\char`_REPEAT}\\
+		\texttt{when}      &  \texttt{W\char`_THEN}\\
+		\texttt{to}        &  \texttt{W\char`_TO}\\
+		\texttt{until}     &  \texttt{W\char`_UNTIL}\\
+		\texttt{var}       &  \texttt{W\char`_VAR}\\
+		\texttt{while}     &  \texttt{W\char`_WHILE}\\
+		\texttt{write}     &  \texttt{W\char`_WRITE}\\
+		\hline
+	\end{tabular}
+	\caption{Listagem dos símbolos adotados para as palavras reservadas. \label{tab:sim_reservada}}
+\end{center}
+\end{table}
+
+\subsection{\texttt{lalg.y}}
+
+O arquivo \texttt{lalg.y} contém a função principal \texttt{main()} em que é chamada a execução do analisador sintático e nele está descrita a gramática da linguagem no formato \texttt{Bison}.
+
+Juntamente com o gramática em \texttt{lalg.y}, está também implementado o \textbf{tratamento de erro sintático modo pânico}. Sua implementação consistiu de uma reescrita na gramática em que foram acrescentadas regras para tratar os erros usando o símbolo especial \texttt{error} e informando uma lista de \textit{tokens} de sincronização composta por: seguidores dos \textit{tokens} esperados mais seguidores do pai e adicionais no contexto de cada regra. Confira o arquivo \texttt{lalg.y} para detalhes. Nas ações dessas regras, foi utilizado a macro \texttt{yyerrok} que instrui o \texttt{Bison} a continuar a análise mesmo diante do erro encontrado.
+
+\newpage
+Além disso, fez-se uso da diretiva \texttt{\%error-verbose}, para deixar o \texttt{Bison} emitir as mensagens de erro invocando a função \texttt{yyerror()}, e da diretiva \texttt{\%locations} para que o \texttt{Bison} acione o recurso de localização -- o que possibilita usar a informação de linha e coluna vinda do analisador léxico por meio da variável \texttt{yylloc}.
+
+O único conflito do tipo \textit{shift/reduce} da gramática, causado pela produção dos comandos \texttt{if/else}, foi deixado a cargo do \texttt{Bison} resolver e usou-se a diretiva \texttt{\%expext 1} para não exíbi-lo durante a compilação. Na implementação da parte semântica, esse conflito será revisto.
+
+\subsection{\texttt{lalg.l}}
+
+Foram inseridas ações para capturar os valores de alguns \textit{tokens} que posteriormente serão usados na semântica/sintática do próximo trabalho.

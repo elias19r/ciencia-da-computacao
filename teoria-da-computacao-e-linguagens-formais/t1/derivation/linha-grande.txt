@@ -1,0 +1,67 @@
+<program>
+->01 <instruction>
+->02 { <action> }
+->04 { <statement> }
+->05 { <command> }
+->06 { <if> }
+->07 { if ( <expr> ) <statement> else <statement> }
+->22 { if ( <expr01> ) <statement> else <statement> }
+->23 { if ( <expr02> ) <statement> else <statement> }
+->24 { if ( <expr03> ) <statement> else <statement> }
+->25 { if ( <expr04> ) <statement> else <statement> }
+->26 { if ( <expr05> ) <statement> else <statement> }
+->27 { if ( <expr06> ) <statement> else <statement> }
+->28 { if ( <expr07> <comparison> <expr06> ) <statement> else <statement> }
+->29 { if ( <expr08> <comparison> <expr06> ) <statement> else <statement> }
+->30 { if ( <expr09> <comparison> <expr06> ) <statement> else <statement> }
+->31 { if ( <expr10> <comparison> <expr06> ) <statement> else <statement> }
+->32 { if ( <expr11> <comparison> <expr06> ) <statement> else <statement> }
+->33 { if ( <expr12> <comparison> <expr06> ) <statement> else <statement> }
+->34 { if ( <expr13> <comparison> <expr06> ) <statement> else <statement> }
+->35 { if ( <expr14> <comparison> <expr06> ) <statement> else <statement> }
+->36 { if ( <variable> <comparison> <expr06> ) <statement> else <statement> }
+->28 { if ( <variable> <comparison> <expr07> ) <statement> else <statement> }
+->29 { if ( <variable> <comparison> <expr08> ) <statement> else <statement> }
+->30 { if ( <variable> <comparison> <expr09> ) <statement> else <statement> }
+->31 { if ( <variable> <comparison> <expr10> ) <statement> else <statement> }
+->32 { if ( <variable> <comparison> <expr11> ) <statement> else <statement> }
+->33 { if ( <variable> <comparison> <expr12> ) <statement> else <statement> }
+->34 { if ( <variable> <comparison> <expr13> ) <statement> else <statement> }
+->35 { if ( <variable> <comparison> <expr14> ) <statement> else <statement> }
+->36 { if ( <variable> <comparison> <constant> ) <statement> else <statement> }
+->18 { if ( NF <comparison> <constant> ) <statement> else <statement> }
+->42 { if ( NF <comparison> <integer> ) <statement> else <statement> }
+->43 { if ( NF <comparison> <number> ) <statement> else <statement> }
+->49 { if ( NF <comparison> <digit> ) <statement> else <statement> }
+->50 { if ( NF <comparison> 8 ) <statement> else <statement> }
+->38 { if ( NF < 8 ) <statement> else <statement> }
+->05 { if ( NF < 8 ) <command> else <statement> }
+->05 { if ( NF < 8 ) <command> else <command> }
+->06 { if ( NF < 8 ) <print> <endline> else <command> }
+->06 { if ( NF < 8 ) <print> <endline> else <print> <endline> }
+->56 { if ( NF < 8 ) <print> ; else <print> <endline> }
+->56 { if ( NF < 8 ) <print> ; else <print> ; }
+->15 { if ( NF < 8 ) print <expr-list> ; else <print> ; }
+->15 { if ( NF < 8 ) print <expr-list> ; else print <expr-list> ; }
+->17 { if ( NF < 8 ) print <constant>, <expr-list> ; else print <expr-list> ; }
+->17 { if ( NF < 8 ) print <constant>, <expr-list> ; else print <constant>, <expr-list> ; }
+->17 { if ( NF < 8 ) print <constant>, <variable> ; else print <constant>, <expr-list> ; }
+->17 { if ( NF < 8 ) print <constant>, <variable> ; else print <constant>, <variable> ; }
+->42 { if ( NF < 8 ) print <string>, <variable> ; else print <constant>, <variable> ; }
+->42 { if ( NF < 8 ) print <string>, <variable> ; else print <string>, <variable> ; }
+->45 { if ( NF < 8 ) print " <sentence> ", <variable> ; else print <string>, <variable> ; }
+->45 { if ( NF < 8 ) print " <sentence> ", <variable> ; else print " <sentence> ", <variable> ; }
+->46 { if ( NF < 8 ) print " <char> <sentence> ", <variable> ; else print " <sentence> ", <variable> ; }
+->47 { if ( NF < 8 ) print " <alpha-numeric> <sentence> ", <variable> ; else print " <sentence> ", <variable> ; }
+->48 { if ( NF < 8 ) print " <letter> <sentence> ", <variable> ; else print " <sentence> ", <variable> ; }
+->51 { if ( NF < 8 ) print " <uppercase> <sentence> ", <variable> ; else print " <sentence> ", <variable> ; }
+->53 { if ( NF < 8 ) print "L <sentence> ", <variable> ; else print " <sentence> ", <variable> ; }
+...
+->54 { if ( NF < 8 ) print "Linha pequena:", <variable> ; else print " <sentence> ", <variable> ; }
+->46 { if ( NF < 8 ) print "Linha pequena:", <variable> ; else print " <char> <sentence> ", <variable> ; }
+...
+->54 { if ( NF < 8 ) print "Linha pequena:", <variable> ; else print "Linha grande:", <variable> ; }
+->18 { if ( NF < 8 ) print "Linha pequena:", $<expr> ; else print "Linha grande:", <variable> ; }
+->18 { if ( NF < 8 ) print "Linha pequena:", $<expr> ; else print "Linha grande:", $<expr> ; }
+...
+->50 { if ( NF < 8 ) print "Linha pequena:", $0 ; else print "Linha grande:", $0 ; }
